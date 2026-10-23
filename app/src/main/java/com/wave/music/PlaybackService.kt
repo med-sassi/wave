@@ -8,54 +8,114 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Icon
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
+import android.media.MediaMetadata
+import android.media.session.MediaSession
+import android.media.session.PlaybackState
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 
 /**
- * Keeps the app alive (with a small notification) while music plays,
- * so playback continues when the screen is off or you switch apps.
+ * Shows the music controls (previous / play-pause / next) in the notification
+ * shade and on the lock screen, handles headset buttons, and keeps playback
+ * alive when the screen is off or you switch apps.
  */
 class PlaybackService : Service() {
 
     companion object {
-        private const val CHANNEL = "wave_playback"
+        const val ACTION_PREV = "com.wave.music.PREV"
+        const val ACTION_TOGGLE = "com.wave.music.TOGGLE"
+        const val ACTION_NEXT = "com.wave.music.NEXT"
+        private const val CHANNEL = "wave_playback_controls"
         private const val NOTIF_ID = 1
+
         private val handler = Handler(Looper.getMainLooper())
+        @Volatile private var instance: PlaybackService? = null
         private var title = ""
         private var artist = ""
+        private var playing = false
+        private var posMs = 0L
+        private var durMs = 0L
+        private var art: Bitmap? = null
+        private var artId = -1L
         private var stopTask: Runnable? = null
 
-        fun update(ctx: Context, playing: Boolean, newTitle: String, newArtist: String) {
+        fun update(ctx: Context, isPlaying: Boolean, newTitle: String, newArtist: String, id: Long, pos: Long, dur: Long) {
             val app = ctx.applicationContext
+            var bmp: Bitmap? = null
+            val reload = id != artId
+            if (reload) {
+                bmp = try {
+                    if (id > 0) ArtCache.get(app, id)?.let { BitmapFactory.decodeByteArray(it, 0, it.size) } else null
+                } catch (e: Exception) { null }
+            }
             handler.post {
-                title = newTitle
-                artist = newArtist
+                title = newTitle; artist = newArtist; playing = isPlaying; posMs = pos; durMs = dur
+                if (reload) { art = bmp; artId = id }
                 stopTask?.let { handler.removeCallbacks(it) }
                 stopTask = null
-                if (playing) {
-                    try {
-                        ContextCompat.startForegroundService(app, Intent(app, PlaybackService::class.java))
-                    } catch (e: Exception) { /* not allowed right now */ }
+                val svc = instance
+                if (isPlaying) {
+                    if (svc == null) {
+                        try { ContextCompat.startForegroundService(app, Intent(app, PlaybackService::class.java)) } catch (e: Exception) { }
+                    } else svc.refresh()
                 } else {
-                    // stay alive briefly so the next song can start in the background
+                    svc?.refresh()
                     val task = Runnable { app.stopService(Intent(app, PlaybackService::class.java)) }
                     stopTask = task
-                    handler.postDelayed(task, 120_000)
+                    handler.postDelayed(task, 180_000)
                 }
             }
         }
     }
 
+    private lateinit var session: MediaSession
+    private var focusRequest: AudioFocusRequest? = null
+    private var resumeOnGain = false
+
+    private val focusListener = AudioManager.OnAudioFocusChangeListener { change ->
+        when (change) {
+            AudioManager.AUDIOFOCUS_LOSS -> { resumeOnGain = false; MainActivity.control("pause") }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> { if (playing) { resumeOnGain = true; MainActivity.control("pause") } }
+            AudioManager.AUDIOFOCUS_GAIN -> { if (resumeOnGain) { resumeOnGain = false; MainActivity.control("play") } }
+        }
+    }
+
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        nm.createNotificationChannel(NotificationChannel(CHANNEL, "Playback", NotificationManager.IMPORTANCE_LOW))
+        nm.createNotificationChannel(NotificationChannel(CHANNEL, "Music controls", NotificationManager.IMPORTANCE_LOW))
+        session = MediaSession(this, "Wave")
+        session.setCallback(object : MediaSession.Callback() {
+            override fun onPlay() { MainActivity.control("play") }
+            override fun onPause() { MainActivity.control("pause") }
+            override fun onSkipToNext() { MainActivity.control("next") }
+            override fun onSkipToPrevious() { MainActivity.control("prev") }
+            override fun onSeekTo(pos: Long) { MainActivity.seek(pos / 1000.0) }
+        })
+        session.isActive = true
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            ACTION_PREV -> MainActivity.control("prev")
+            ACTION_TOGGLE -> MainActivity.control("toggle")
+            ACTION_NEXT -> MainActivity.control("next")
+        }
+        if (playing) requestFocus()
+        updateSession()
         try {
             ServiceCompat.startForeground(
                 this, NOTIF_ID, buildNotification(),
@@ -67,22 +127,79 @@ class PlaybackService : Service() {
         return START_NOT_STICKY
     }
 
+    fun refresh() {
+        if (playing) requestFocus()
+        updateSession()
+        (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(NOTIF_ID, buildNotification())
+    }
+
+    private fun requestFocus() {
+        if (focusRequest != null) return
+        val am = getSystemService(AUDIO_SERVICE) as AudioManager
+        val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+            )
+            .setOnAudioFocusChangeListener(focusListener, handler)
+            .build()
+        focusRequest = req
+        am.requestAudioFocus(req)
+    }
+
+    private fun updateSession() {
+        val md = MediaMetadata.Builder()
+            .putString(MediaMetadata.METADATA_KEY_TITLE, title)
+            .putString(MediaMetadata.METADATA_KEY_ARTIST, artist)
+            .putLong(MediaMetadata.METADATA_KEY_DURATION, durMs)
+        art?.let { md.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, it) }
+        session.setMetadata(md.build())
+        val actions = PlaybackState.ACTION_PLAY or PlaybackState.ACTION_PAUSE or PlaybackState.ACTION_PLAY_PAUSE or
+            PlaybackState.ACTION_SKIP_TO_NEXT or PlaybackState.ACTION_SKIP_TO_PREVIOUS or PlaybackState.ACTION_SEEK_TO
+        session.setPlaybackState(
+            PlaybackState.Builder()
+                .setActions(actions)
+                .setState(if (playing) PlaybackState.STATE_PLAYING else PlaybackState.STATE_PAUSED, posMs, if (playing) 1f else 0f)
+                .build()
+        )
+    }
+
+    private fun actionIntent(action: String, code: Int): PendingIntent =
+        PendingIntent.getService(
+            this, code, Intent(this, PlaybackService::class.java).setAction(action),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
     private fun buildNotification(): Notification {
         val open = PendingIntent.getActivity(
             this, 0,
             Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
-        return NotificationCompat.Builder(this, CHANNEL)
+        val b = Notification.Builder(this, CHANNEL)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(if (title.isBlank()) "Wave" else title)
             .setContentText(artist)
             .setContentIntent(open)
-            .setOngoing(true)
             .setOnlyAlertOnce(true)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .build()
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+            .setStyle(
+                Notification.MediaStyle()
+                    .setMediaSession(session.sessionToken)
+                    .setShowActionsInCompactView(0, 1, 2)
+            )
+        art?.let { b.setLargeIcon(it) }
+        b.addAction(Notification.Action.Builder(Icon.createWithResource(this, R.drawable.ic_prev), "Previous", actionIntent(ACTION_PREV, 1)).build())
+        b.addAction(
+            Notification.Action.Builder(
+                Icon.createWithResource(this, if (playing) R.drawable.ic_pause else R.drawable.ic_play),
+                if (playing) "Pause" else "Play", actionIntent(ACTION_TOGGLE, 2)
+            ).build()
+        )
+        b.addAction(Notification.Action.Builder(Icon.createWithResource(this, R.drawable.ic_next), "Next", actionIntent(ACTION_NEXT, 3)).build())
+        return b.build()
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -90,6 +207,13 @@ class PlaybackService : Service() {
     }
 
     override fun onDestroy() {
+        instance = null
+        try {
+            focusRequest?.let { (getSystemService(AUDIO_SERVICE) as AudioManager).abandonAudioFocusRequest(it) }
+            focusRequest = null
+            session.isActive = false
+            session.release()
+        } catch (e: Exception) { }
         stopForeground(STOP_FOREGROUND_REMOVE)
         super.onDestroy()
     }

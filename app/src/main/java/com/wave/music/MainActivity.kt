@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.webkit.JavascriptInterface
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
@@ -24,6 +26,7 @@ import androidx.webkit.WebViewAssetLoader
 import java.io.ByteArrayInputStream
 import java.io.FilterInputStream
 import java.io.InputStream
+import java.lang.ref.WeakReference
 
 /**
  * Hosts the Wave interface (assets/index.html) in a WebView and gives it:
@@ -35,6 +38,24 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val HOST = "appassets.androidplatform.net"
+        @Volatile private var webRef: WeakReference<WebView>? = null
+
+        /** Sends play / pause / toggle / next / prev from the notification or lock screen to the player. */
+        fun control(cmd: String) {
+            val w = webRef?.get() ?: return
+            w.post { w.evaluateJavascript("window.__waveCtl && window.__waveCtl('$cmd')", null) }
+        }
+
+        fun seek(seconds: Double) {
+            val w = webRef?.get() ?: return
+            w.post { w.evaluateJavascript("window.__waveSeek && window.__waveSeek($seconds)", null) }
+        }
+    }
+
+    private var fileCallback: ValueCallback<Array<Uri>>? = null
+    private val imagePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        fileCallback?.onReceiveValue(if (uri != null) arrayOf(uri) else null)
+        fileCallback = null
     }
 
     private lateinit var web: WebView
@@ -54,6 +75,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         web = WebView(this)
+        webRef = WeakReference(web)
         setContentView(web)
         web.setBackgroundColor(0xFF0B121A.toInt())
         web.settings.apply {
@@ -64,6 +86,19 @@ class MainActivity : AppCompatActivity() {
             allowContentAccess = false
         }
         web.addJavascriptInterface(Bridge(), "WaveNative")
+        // lets the page open the picture chooser (playlist pictures)
+        web.webChromeClient = object : WebChromeClient() {
+            override fun onShowFileChooser(
+                webView: WebView,
+                filePathCallback: ValueCallback<Array<Uri>>,
+                fileChooserParams: FileChooserParams
+            ): Boolean {
+                fileCallback?.onReceiveValue(null)
+                fileCallback = filePathCallback
+                imagePicker.launch("image/*")
+                return true
+            }
+        }
         web.webViewClient = object : WebViewClient() {
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
                 val uri = request.url
@@ -143,8 +178,8 @@ class MainActivity : AppCompatActivity() {
         fun getAudioList(): String = MusicLibrary.listJson(this@MainActivity)
 
         @JavascriptInterface
-        fun setPlaying(playing: Boolean, title: String, artist: String) {
-            PlaybackService.update(applicationContext, playing, title, artist)
+        fun setNowPlaying(playing: Boolean, title: String, artist: String, mediaId: Double, positionMs: Double, durationMs: Double) {
+            PlaybackService.update(applicationContext, playing, title, artist, mediaId.toLong(), positionMs.toLong(), durationMs.toLong())
         }
     }
 

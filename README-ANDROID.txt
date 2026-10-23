@@ -1,5 +1,23 @@
-WAVE for Android  -  your phone's music, found automatically
+WAVE for Android  -  your phone's music, found automatically  (version 2)
 ==============================================================
+
+NEW IN VERSION 2
+- Only real songs: voice messages, WhatsApp audio, call/voice recordings, ringtones,
+  alarms, podcasts and audiobooks are left out (songs under 40 seconds are skipped too).
+- Spotify-style home: quick tiles, Recently played, Made for you (daily mix), your playlists, your artists.
+- New logo and app icon.
+- Playlists: big cover page, play button, your own picture (tap the camera on the cover),
+  a new create/edit sheet with picture + name, and it opens "Add songs" right after you create one.
+- Library tabs (Songs / Playlists / Artists) and new sort chips (Recently added, Title, Artist, Oldest).
+- Controls outside the app: previous / play-pause / next in the notification shade and on the lock screen,
+  headset and Bluetooth buttons, and music pauses automatically for phone calls.
+
+HOW TO UPDATE (you already have the repository)
+1. Unzip this folder. On github.com open your "wave" repository > Add file > Upload files.
+2. Drag everything INSIDE the unzipped WaveMusicAndroid folder (Ctrl+A) into the page.
+   Files with the same name are replaced; new ones are added.
+3. Commit changes, open the Actions tab, wait for the green check, download Wave-APK again.
+4. Install the new app-debug.apk over the old one (your playlists are kept).
 
 What it does
 - On first launch it asks permission to read music, then lists every song on the phone.

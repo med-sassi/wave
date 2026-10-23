@@ -52,6 +52,9 @@ svg.i.solid{fill:currentColor}
 /* sidebar */
 .sidebar{position:sticky;top:0;height:100dvh;padding:22px 14px 16px;display:flex;flex-direction:column;gap:20px;border-right:1px solid var(--line);background:rgba(8,14,21,.62);backdrop-filter:blur(20px);overflow:hidden}
 .brand{display:flex;align-items:center;gap:10px;padding:0 10px;font-weight:800;font-size:25px;letter-spacing:-.045em}
+.logo{width:36px;height:36px;flex:none;border-radius:11px;box-shadow:0 6px 20px rgba(91,140,255,.28)}
+.mobile-head{display:none;align-items:center;gap:10px;margin:0 0 16px}
+.mobile-head .wordmark{font-weight:800;font-size:24px;letter-spacing:-.045em}
 .brand-mark{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--acc);color:var(--on-acc);transition:background .6s}
 .brand-mark svg{width:20px;height:20px;stroke-width:2.6}
 .nav{display:flex;flex-direction:column;gap:3px}
@@ -67,7 +70,7 @@ svg.i.solid{fill:currentColor}
 .side-foot{margin-top:auto}
 
 /* main */
-.main{min-width:0;width:100%;max-width:1180px;margin:0 auto;padding:20px clamp(16px,3.6vw,46px) calc(var(--dock) + 36px)}
+.main{--pad:clamp(16px,3.6vw,46px);min-width:0;width:100%;max-width:1180px;margin:0 auto;padding:20px clamp(16px,3.6vw,46px) calc(var(--dock) + 36px)}
 .topbar{display:flex;align-items:center;gap:12px;margin-bottom:26px}
 .searchbar{flex:1;max-width:460px;display:flex;align-items:center;gap:10px;height:46px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--muted);transition:background .15s,border-color .15s}
 .searchbar:focus-within{background:rgba(255,255,255,.09);border-color:color-mix(in srgb,var(--acc) 55%,transparent)}
@@ -152,7 +155,9 @@ svg.i.solid{fill:currentColor}
 .card.new .art svg{width:32%;height:32%;color:var(--muted)}
 .card.new:hover .art{border-color:var(--acc)}
 .rail{display:flex;gap:12px;overflow-x:auto;padding:0 2px 8px;margin:0 -2px;scroll-snap-type:x proximity}
-.rail .card{flex:0 0 152px;scroll-snap-align:start}
+.rail .card{flex:0 0 150px;scroll-snap-align:start;padding:0 0 10px;background:none}
+.rail .card:hover .art{filter:brightness(1.1)}
+.rail .card .c-title,.rail .card .c-sub{padding-right:4px}
 
 /* collection header */
 .col-head{display:flex;gap:26px;align-items:flex-end;margin-bottom:26px}
@@ -332,6 +337,78 @@ body.native .tabbar{grid-template-columns:repeat(3,1fr)}
 body.native{overscroll-behavior:none;-webkit-user-select:none;user-select:none}
 body.native input{-webkit-user-select:text;user-select:text}
 
+
+/* home (Spotify-style) */
+.home-head{margin:0 0 18px}
+.home-head h1{font-size:clamp(26px,3.6vw,34px);font-weight:800;letter-spacing:-.035em}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:34px}
+@media(min-width:900px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}}
+.tile{display:flex;align-items:center;gap:12px;height:56px;padding-right:10px;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.085);text-align:left;font-weight:700;font-size:13.5px;line-height:1.25;transition:background .15s}
+.tile:hover{background:rgba(255,255,255,.15)}
+.tile .art{width:56px;height:56px;border-radius:0}
+.tile .art svg{width:40%;height:40%}
+.tile-name{min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c-sub.two{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal;line-height:1.35}
+.card.round{text-align:center}
+.card.round .art{border-radius:50%}
+.card.round .art img{border-radius:50%}
+.sec-head h2{font-size:21px}
+
+/* chips */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 14px;margin:0 -2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:36px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.085);font-weight:650;font-size:13.5px;color:var(--text);transition:background .15s,color .15s,transform .1s}
+.chip:hover{background:rgba(255,255,255,.15)}
+.chip:active{transform:scale(.97)}
+.chip.on{background:var(--acc);color:var(--on-acc)}
+.chips.tabs{padding-bottom:20px}
+
+/* playlist / collection page */
+.main{position:relative}
+.main::before{content:"";position:absolute;left:0;right:0;top:0;height:520px;pointer-events:none;background:linear-gradient(180deg,color-mix(in srgb,var(--hero,transparent) 60%,transparent) 0%,color-mix(in srgb,var(--hero,transparent) 22%,transparent) 55%,transparent 100%)}
+.main>*{position:relative}
+.col-hero{display:flex;align-items:flex-end;gap:26px;padding:6px 0 8px}
+.col-cover{position:relative;display:block;width:clamp(132px,22vw,220px);flex:none;border-radius:14px;overflow:hidden;box-shadow:0 22px 56px rgba(0,0,0,.5);text-align:left}
+.col-cover .art{width:100%;border-radius:0}
+.col-cover.round{border-radius:50%}
+.col-cover.round .art{border-radius:50%}
+.cover-badge{position:absolute;right:8px;bottom:8px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(6,12,18,.72);backdrop-filter:blur(6px);color:#fff;transition:transform .15s}
+.cover-badge svg{width:18px;height:18px}
+button.col-cover:hover .cover-badge{transform:scale(1.1)}
+.col-meta .kind{font-size:13px;font-weight:700;margin-bottom:6px}
+.col-meta h1{font-size:clamp(30px,6vw,64px);font-weight:800;letter-spacing:-.045em;line-height:1.02;overflow-wrap:anywhere}
+.col-meta .sub{margin-top:10px;color:rgba(233,240,246,.75);font-size:14px}
+.col-bar{display:flex;align-items:center;gap:10px;margin:18px 0 22px}
+.fab{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:var(--on-acc);box-shadow:0 10px 28px rgba(0,0,0,.35);transition:transform .12s,filter .15s}
+.fab:hover{transform:scale(1.06);filter:brightness(1.06)}
+.fab:active{transform:scale(.96)}
+.fab svg{width:26px;height:26px}
+.icon-btn.lg{width:48px;height:48px}
+.icon-btn.lg svg{width:24px;height:24px}
+@media(max-width:700px){
+  .col-hero{flex-direction:column;align-items:center;text-align:center;gap:18px}
+  .col-bar{justify-content:flex-start}
+}
+
+/* create / edit playlist sheet */
+.form-row{display:flex;gap:18px;align-items:flex-start;margin-top:14px}
+.cover-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;flex:none}
+.cover-pick{width:116px;height:116px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(255,255,255,.06) center/cover no-repeat;border:1.5px dashed var(--line);color:var(--muted);font-size:12.5px;font-weight:650;transition:border-color .15s,background-color .15s}
+.cover-pick:hover{border-color:var(--acc);color:var(--text)}
+.cover-pick svg{width:26px;height:26px}
+.cover-pick.has{border-style:solid;border-color:transparent}
+.cover-pick.has svg,.cover-pick.has span{display:none}
+.field{flex:1;min-width:0}
+.field label{display:block;margin-bottom:6px;color:var(--muted);font-size:12.5px;font-weight:700}
+.field .count{margin-top:6px;text-align:right;color:var(--faint);font-size:12px}
+@media(max-width:560px){
+  dialog{width:100%;max-width:100%;margin:auto 0 0;border-radius:26px 26px 0 0;border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px)}
+  dialog.wide{height:min(88dvh,740px)}
+  .form-row{flex-direction:column;align-items:center}
+  .field{width:100%}
+}
+@media(max-width:899px){.mobile-head{display:flex}}
+
 /* layout: sidebar hidden below 900px */
 body.has-player{--dock:112px}
 @media(max-width:899px){
@@ -343,6 +420,7 @@ body.has-player{--dock:112px}
   .dock{left:12px;right:12px;bottom:calc(var(--tab) + var(--safe-b) + 8px)}
   .topbar .add-top{display:none}
   .searchbar{max-width:none}
+  .topbar .spacer{display:none}
 }
 @media(max-width:700px){
   body.has-player{--dock:calc(var(--tab) + var(--safe-b) + 90px)}
@@ -366,6 +444,9 @@ body.has-player{--dock:112px}
   .eq i{animation:none;transform:scaleY(.7)}
   .welcome .bars i{animation:none}
 }
+.chips:not(.tabs) .chip{height:32px;padding:0 14px;font-size:13px;background:transparent;border:1px solid var(--line);color:var(--muted)}
+.chips:not(.tabs) .chip:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.chips:not(.tabs) .chip.on{background:color-mix(in srgb,var(--acc) 22%,transparent);border-color:color-mix(in srgb,var(--acc) 60%,transparent);color:var(--text)}
 
 </style>
 </head>
@@ -401,6 +482,8 @@ body.has-player{--dock:112px}
     <symbol id="i-next-up" viewBox="0 0 24 24"><path d="M4 6h10M4 12h10M4 18h6M17 9v8l5-4z"/></symbol>
     <symbol id="i-queue-add" viewBox="0 0 24 24"><path d="M4 6h12M4 12h12M4 18h7M19 14v6M16 17h6"/></symbol>
     <symbol id="i-playlist-add" viewBox="0 0 24 24"><path d="M4 6h12M4 12h8M4 18h7M18 10v8M14 14h8"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8h3.2L8.4 5.5h7.2L17.3 8h3.2a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1h-17a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.6"/></symbol>
+    <symbol id="i-logo" viewBox="0 0 40 40"><defs><linearGradient id="lgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8be3e8"/><stop offset="1" stop-color="#5b8cff"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lgrad)"/><path d="M11 22v-4M17 28V12M23 25v-9M29 22v-4" stroke="#06121a" stroke-width="3.4" stroke-linecap="round" fill="none"/></symbol>
     <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 15V9M9 19V5M14 17V7M19 15v-4"/></symbol>
   </defs>
 </svg>
@@ -409,7 +492,7 @@ body.has-player{--dock:112px}
 
 <div class="shell">
   <aside class="sidebar" aria-label="Sidebar">
-    <div class="brand"><span class="brand-mark"><svg class="i"><use href="#i-wave"/></svg></span>wave.</div>
+    <div class="brand"><svg class="logo" aria-hidden="true"><use href="#i-logo"/></svg>wave.</div>
     <nav class="nav" aria-label="Main">
       <button class="nav-item" data-nav="home"><svg class="i"><use href="#i-home"/></svg>Home</button>
       <button class="nav-item" data-nav="search"><svg class="i"><use href="#i-search"/></svg>Search</button>
@@ -423,10 +506,11 @@ body.has-player{--dock:112px}
   </aside>
 
   <main class="main" id="main">
+    <div class="mobile-head"><svg class="logo" aria-hidden="true"><use href="#i-logo"/></svg><span class="wordmark">wave.</span></div>
     <div class="topbar">
       <label class="searchbar" id="searchbar">
         <svg class="i"><use href="#i-search"/></svg>
-        <input id="search" type="search" placeholder="Search songs, artists, playlists" aria-label="Search your music" autocomplete="off" spellcheck="false">
+        <input id="search" type="search" placeholder="Search your music" aria-label="Search your music" autocomplete="off" spellcheck="false">
         <button class="clear" id="searchClear" type="button" aria-label="Clear search"><svg class="i" style="width:16px;height:16px"><use href="#i-close"/></svg></button>
       </label>
       <span class="spacer"></span>
@@ -508,8 +592,14 @@ body.has-player{--dock:112px}
 <dialog id="nameDlg">
   <form class="dlg" method="dialog" id="nameForm">
     <h3 id="nameTitle">Create a playlist</h3>
-    <p id="nameDesc">Give it a name. You can add songs right after.</p>
-    <input type="text" id="nameInput" maxlength="60" placeholder="Playlist name" aria-label="Playlist name" autocomplete="off">
+    <p id="nameDesc" hidden></p>
+    <div class="form-row">
+      <div class="cover-wrap">
+        <button type="button" class="cover-pick" id="coverPick" aria-label="Choose a picture for the playlist"><svg class="i"><use href="#i-camera"/></svg><span>Add picture</span></button>
+        <button type="button" class="link-btn" id="coverClear" hidden>Remove picture</button>
+      </div>
+      <div class="field"><label for="nameInput">Name</label><input type="text" id="nameInput" maxlength="60" placeholder="Playlist name" autocomplete="off"><div class="count" id="nameCount">0/60</div></div>
+    </div>
     <div class="dlg-actions"><button class="btn" type="button" id="nameCancel">Cancel</button><button class="btn primary" type="submit" id="nameOk">Create</button></div>
   </form>
 </dialog>
@@ -538,6 +628,7 @@ body.has-player{--dock:112px}
 <div class="menu" id="menu" role="menu" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="drop" id="drop">Drop audio files to add them</div>
+<input type="file" id="coverInput" accept="image/*" hidden>
 <input type="file" id="filePicker" accept="audio/*,.mp3,.m4a,.aac,.ogg,.oga,.opus,.wav,.flac,.weba" multiple hidden>
 <audio id="audio" preload="metadata"></audio>
 
@@ -589,6 +680,7 @@ let loadedId = null;        // id whose file is in the <audio>
 let queue = [], base = [], qi = -1;
 let shuffle = false, repeat = 'off', sortMode = NATIVE ? 'title' : 'added', volume = 0.8, lastTime = 0;
 let view = { name: 'home', id: null }, prevView = null, query = '';
+let plays = {}, libTab = 'songs';
 let playing = false, seeking = false, dbOk = false, importTarget = null;
 const covers = new Map();       // id -> object URL (small jpeg)
 const sessionFiles = new Map(); // id -> File imported this session
@@ -641,7 +733,7 @@ function save(now) {
   const run = () => {
     try {
       localStorage.setItem(LS_KEY, JSON.stringify({
-        tracks: NATIVE ? [] : tracks, playlists, liked, recent, curId, queue, base, qi, shuffle, repeat, sortMode, volume,
+        tracks: NATIVE ? [] : tracks, plays, playlists, liked, recent, curId, queue, base, qi, shuffle, repeat, sortMode, volume,
         lastTime: Math.floor(lastTime)
       }));
     } catch (e) { /* storage full or blocked */ }
@@ -664,6 +756,7 @@ function loadSaved() {
     curId = ok(s.curId) ? s.curId : null;
     queue = (s.queue || []).filter(ok); base = (s.base || []).filter(ok);
     qi = curId ? queue.indexOf(curId) : -1;
+    plays = s.plays && typeof s.plays === 'object' ? s.plays : {};
     shuffle = !!s.shuffle; repeat = ['off', 'all', 'one'].includes(s.repeat) ? s.repeat : 'off';
     sortMode = ['added', 'newest', 'title', 'artist'].includes(s.sortMode) ? s.sortMode : 'added';
     volume = typeof s.volume === 'number' ? clamp(s.volume, 0, 1) : 0.8;
@@ -897,6 +990,39 @@ const specialArt = (kind, extra = '') => kind === 'liked'
   ? `<span class="art gen ${extra}" style="--a1:hsl(338 68% 62%);--a2:hsl(268 52% 34%)">${ico('heart', 'solid')}</span>`
   : `<span class="art gen ${extra}" style="--a1:hsl(198 68% 52%);--a2:hsl(238 48% 30%)">${ico('clock')}</span>`;
 
+/* ---------- playlists, artists, mixes ---------- */
+function seededShuffle(arr, seed) {
+  const r = () => { seed = (seed + 0x6D2B79F5) >>> 0; let t = seed; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a;
+}
+function plArt(p, extra = '') {
+  if (p.cover) return `<span class="art ${extra}"><img src="${p.cover}" alt="" decoding="async"></span>`;
+  return mosaic(p.ids, extra);
+}
+const MIXES = {
+  daily: { name: 'Wave Mix', sub: 'Your songs, shuffled fresh every day', h: 265, icon: 'shuffle' },
+  new: { name: 'New in your library', sub: 'The latest songs you added', h: 160, icon: 'plus' },
+  top: { name: 'On repeat', sub: 'The songs you play the most', h: 18, icon: 'repeat' }
+};
+function mixArt(k, extra = '') { const m = MIXES[k]; return `<span class="art gen ${extra}" style="--a1:hsl(${m.h} 62% 58%);--a2:hsl(${(m.h + 48) % 360} 52% 28%)">${ico(m.icon)}</span>`; }
+function artistList() {
+  const m = new Map();
+  tracks.forEach(t => { if (!m.has(t.artist)) m.set(t.artist, []); m.get(t.artist).push(t.id); });
+  return Array.from(m, ([name, ids]) => ({ name, ids })).sort((x, y) => y.ids.length - x.ids.length || x.name.localeCompare(y.name));
+}
+async function imageToCover(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await loadImg(url);
+    const side = Math.min(img.naturalWidth, img.naturalHeight), out = Math.min(480, side);
+    const c = document.createElement('canvas'); c.width = c.height = out;
+    c.getContext('2d').drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, out, out);
+    const s = document.createElement('canvas'); s.width = s.height = 24;
+    const sx = s.getContext('2d'); sx.drawImage(c, 0, 0, 24, 24);
+    return { url: c.toDataURL('image/jpeg', 0.82), acc: dominantAcc(sx.getImageData(0, 0, 24, 24).data) };
+  } finally { URL.revokeObjectURL(url); }
+}
+
 /* ---------- lists ---------- */
 function sortedTracks() {
   const a = tracks.slice();
@@ -916,6 +1042,10 @@ function listIds(key) {
   if (key === 'liked') return liked.filter(id => tmap.has(id));
   if (key === 'recent') return recent.filter(id => tmap.has(id));
   if (key === 'search') return searchTracks().map(t => t.id);
+  if (key === 'mix:daily') { const d = new Date(); return seededShuffle(tracks.map(t => t.id), hash(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}|${tracks.length}`)).slice(0, 50); }
+  if (key === 'mix:new') return tracks.slice().sort((x, y) => (y.added || 0) - (x.added || 0)).slice(0, 40).map(t => t.id);
+  if (key === 'mix:top') return tracks.filter(t => plays[t.id] > 0).sort((x, y) => plays[y.id] - plays[x.id]).slice(0, 40).map(t => t.id);
+  if (key.startsWith('artist:')) { const n = key.slice(7); return tracks.filter(t => t.artist === n).map(t => t.id); }
   if (key.startsWith('pl:')) { const p = playlists.find(x => x.id === key.slice(3)); return p ? p.ids.filter(id => tmap.has(id)) : []; }
   return [];
 }
@@ -937,7 +1067,7 @@ async function load(id, { play = true, at = 0 } = {}) {
   const token = ++loadToken;
   curId = id;
   if (queue[qi] !== id) { qi = queue.indexOf(id); if (qi < 0) { queue = [id]; base = [id]; qi = 0; } }
-  if (play) { recent = [id, ...recent.filter(x => x !== id)].slice(0, 40); }
+  if (play) { recent = [id, ...recent.filter(x => x !== id)].slice(0, 40); plays[id] = (plays[id] || 0) + 1; }
   updateMeta();
   if (play && (view.name === 'home' || view.name === 'recent')) renderView();
   if (NATIVE) { audio.src = '/media/' + t.mid; }
@@ -1088,11 +1218,11 @@ function syncPlayState() {
   startViz(); nativeNotify();
 }
 let lastNotif = '';
-function nativeNotify() {
+function nativeNotify(force) {
   if (!NATIVE) return;
   const t = T(curId), key = `${playing}|${t ? t.id : ''}`;
-  if (key === lastNotif) return; lastNotif = key;
-  try { WaveNative.setPlaying(playing, t ? t.name : '', t ? t.artist : ''); } catch (e) {}
+  if (key === lastNotif && !force) return; lastNotif = key;
+  try { WaveNative.setNowPlaying(playing, t ? t.name : '', t ? t.artist : '', t && t.mid ? t.mid : 0, Math.round(curPos() * 1000), Math.round(curDur() * 1000)); } catch (e) {}
 }
 function syncModes() {
   $$('[data-ctl=shuffle]').forEach(b => { b.setAttribute('aria-pressed', shuffle); b.title = shuffle ? 'Shuffle is on' : 'Shuffle'; });
@@ -1257,66 +1387,97 @@ function rows(ids, key, limit) {
   const use = limit ? ids.slice(0, limit) : ids;
   return `<div class="tracks" data-list="${key}"><div class="t-head" aria-hidden="true"><span>#</span><span>Title</span><span>Album</span><span>Time</span><span></span><span></span></div>${use.map((id, i) => rowHTML(T(id), i + 1)).join('')}</div>`;
 }
-const colCard = (kind, id, name, sub, artHtml) => `<button class="card" data-act="open-col" data-kind="${kind}" data-id="${id || ''}">${artHtml}<div class="c-title trunc" dir="auto">${esc(name)}</div><div class="c-sub trunc">${esc(sub)}</div></button>`;
-function collectionCards(extra = true) {
+const colCard = (kind, id, name, sub, artHtml, round) => `<button class="card${round ? ' round' : ''}" data-act="open-col" data-kind="${kind}" data-id="${esc(id || '')}">${artHtml}<div class="c-title trunc" dir="auto">${esc(name)}</div><div class="c-sub trunc">${esc(sub)}</div></button>`;
+const trackCard = (id, list) => { const t = T(id); return `<button class="card" data-act="play-card" data-list="${list}" data-id="${id}">${art(t)}<div class="c-title trunc" dir="auto">${esc(t.name)}</div><div class="c-sub trunc" dir="auto">${esc(t.artist)}</div></button>`; };
+const section = (title, inner, link) => `<section class="sec"><div class="sec-head"><h2>${title}</h2>${link || ''}</div>${inner}</section>`;
+function collectionCards() {
   const lk = listIds('liked'), rc = listIds('recent');
   let h = colCard('liked', '', 'Liked songs', plural(lk.length, 'song'), specialArt('liked'));
   h += colCard('recent', '', 'Recently played', plural(rc.length, 'song'), specialArt('recent'));
-  h += playlists.map(p => colCard('playlist', p.id, p.name, plural(p.ids.length, 'song'), mosaic(p.ids))).join('');
-  if (extra) h += `<button class="card new" data-act="new-playlist"><span class="art">${ico('plus')}</span><div class="c-title">New playlist</div><div class="c-sub">&nbsp;</div></button>`;
+  h += playlists.map(p => colCard('playlist', p.id, p.name, plural(p.ids.length, 'song'), plArt(p))).join('');
+  h += `<button class="card new" data-act="new-playlist"><span class="art">${ico('plus')}</span><div class="c-title">New playlist</div><div class="c-sub">&nbsp;</div></button>`;
   return `<div class="cards">${h}</div>`;
 }
+function artistCards(list) { return list.map(a => colCard('artist', a.name, a.name, plural(a.ids.length, 'song'), art(T(a.ids[0]), 'round'), true)).join(''); }
+const SORTS = [['newest', 'Recently added'], ['title', 'Title'], ['artist', 'Artist'], ['added', 'Oldest first']];
+const sortChips = () => `<div class="chips" role="radiogroup" aria-label="Sort songs">${SORTS.map(([k, l]) => `<button class="chip${sortMode === k ? ' on' : ''}" role="radio" aria-checked="${sortMode === k}" data-act="sort" data-v="${k}">${l}</button>`).join('')}</div>`;
 function nativeEmpty() {
-  return `<header class="page-head"><h1>${greeting()}</h1></header><section class="welcome"><div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>` + (nativePerm
-    ? `<h2>No music found</h2><p>Wave shows the songs stored on this phone. Copy some music onto it, then scan again.</p><button class="btn primary" data-act="rescan">Scan again</button>`
+  return `<header class="home-head"><h1>${greeting()}</h1></header><section class="welcome"><div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>` + (nativePerm
+    ? `<h2>No songs found</h2><p>Wave lists the songs stored on this phone. Voice messages and recordings are left out. Copy some music onto the phone, then scan again.</p><button class="btn primary" data-act="rescan">Scan again</button>`
     : `<h2>Allow access to your music</h2><p>Wave needs permission to read the songs on this phone. Nothing leaves your device.</p><button class="btn primary" data-act="grant">Allow access</button>`) + `</section>`;
+}
+function quickTiles() {
+  const items = [{ name: 'Liked songs', art: specialArt('liked'), attrs: 'data-act="open-col" data-kind="liked"' }];
+  playlists.slice(0, 3).forEach(p => items.push({ name: p.name, art: plArt(p), attrs: `data-act="open-col" data-kind="playlist" data-id="${p.id}"` }));
+  const rec = listIds('recent'), key = rec.length ? 'recent' : 'all';
+  for (const id of (rec.length ? rec : listIds('all'))) {
+    if (items.length >= 6) break;
+    const t = T(id); if (t) items.push({ name: t.name, art: art(t), attrs: `data-act="play-card" data-list="${key}" data-id="${id}"` });
+  }
+  if (items.length % 2) items.pop();
+  return `<div class="tiles">${items.map(i => `<button class="tile" ${i.attrs}>${i.art}<span class="tile-name" dir="auto">${esc(i.name)}</span></button>`).join('')}</div>`;
 }
 function homeView() {
   if (!tracks.length && NATIVE) return nativeEmpty();
   if (!tracks.length) {
-    return `<header class="page-head"><h1>${greeting()}</h1></header>
+    return `<header class="home-head"><h1>${greeting()}</h1></header>
     <section class="welcome"><div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
       <h2>Bring your music</h2>
       <p>Add songs from your phone or computer. ${dbOk ? 'They’re saved in this browser, so they’ll be here next time you open Wave.' : 'This browser can’t save songs between visits, so they’ll be gone when you close the tab.'}</p>
       <button class="btn primary" data-act="import">${ico('plus')}Add music</button>
       <p style="margin:16px 0 0;font-size:13px;color:var(--faint)">You can also drag audio files onto this page.</p></section>`;
   }
-  const hid = (curId && tmap.has(curId)) ? curId : (recent[0] || tracks[0].id), ht = T(hid), a = trackAcc(ht);
-  const total = totalDur(tracks.map(t => t.id));
-  let h = `<header class="page-head"><h1>${greeting()}</h1><p class="sub">${plural(tracks.length, 'song')}${total ? ' · ' + longTime(total) : ''}</p></header>`;
-  h += `<section class="hero" style="--hero:hsl(${a.h} ${a.s}% 50%)">${art(ht)}<div class="hero-text"><div class="kicker">${curId ? 'Pick up where you left off' : 'Start listening'}</div><h2 dir="auto">${esc(ht.name)}</h2><p class="by" dir="auto">${esc(ht.artist)}</p><div class="hero-actions"><button class="btn primary js-hero-play" data-act="resume">${ico(playing && curId === hid ? 'pause' : 'play', 'fillicon')}${playing && curId === hid ? 'Pause' : 'Play'}</button><button class="btn" data-act="shuffle-all">${ico('shuffle')}Shuffle all</button></div></div></section>`;
-  const rc = listIds('recent').slice(0, 12);
-  if (rc.length) h += `<section class="sec"><div class="sec-head"><h2>Recently played</h2><button class="link-btn" data-act="open-col" data-kind="recent">See all</button></div><div class="rail">${rc.map(id => { const t = T(id); return `<button class="card" data-act="play-card" data-list="recent" data-id="${id}">${art(t)}<div class="c-title trunc" dir="auto">${esc(t.name)}</div><div class="c-sub trunc" dir="auto">${esc(t.artist)}</div></button>`; }).join('')}</div></section>`;
-  h += `<section class="sec"><div class="sec-head"><h2>Your collections</h2></div>${collectionCards()}</section>`;
+  let h = `<header class="home-head"><h1>${greeting()}</h1></header>${quickTiles()}`;
+  const rc = listIds('recent').slice(0, 14);
+  if (rc.length) h += section('Recently played', `<div class="rail">${rc.map(id => trackCard(id, 'recent')).join('')}</div>`, `<button class="link-btn" data-act="open-col" data-kind="recent">Show all</button>`);
+  const mixKeys = ['daily', 'new'].concat(Object.keys(plays).length ? ['top'] : []);
+  h += section('Made for you', `<div class="rail">${mixKeys.map(k => `<button class="card" data-act="open-col" data-kind="mix" data-id="${k}">${mixArt(k)}<div class="c-title trunc">${MIXES[k].name}</div><div class="c-sub two">${MIXES[k].sub}</div></button>`).join('')}</div>`);
+  h += section('Your playlists', `<div class="rail">${playlists.map(p => colCard('playlist', p.id, p.name, plural(p.ids.length, 'song'), plArt(p))).join('')}<button class="card new" data-act="new-playlist"><span class="art">${ico('plus')}</span><div class="c-title">New playlist</div><div class="c-sub">&nbsp;</div></button></div>`);
+  const arts = artistList().filter(a => a.name !== 'Unknown artist').slice(0, 14);
+  if (arts.length) h += section('Your artists', `<div class="rail">${artistCards(arts)}</div>`, `<button class="link-btn" data-act="tab" data-v="artists" data-go="library">Show all</button>`);
   const all = listIds('all');
-  h += `<section class="sec"><div class="sec-head"><h2>All songs</h2>${all.length > 8 ? `<button class="link-btn" data-act="see-all">See all ${all.length}</button>` : ''}</div>${rows(all, 'all', 8)}</section>`;
+  h += section('Your songs', rows(all, 'all', 8), all.length > 8 ? `<button class="link-btn" data-act="see-all">Show all ${all.length}</button>` : '');
   return h;
 }
 function libraryView() {
   if (!tracks.length && NATIVE) return nativeEmpty();
-  const all = listIds('all');
+  const tabs = [['songs', 'Songs'], ['playlists', 'Playlists'], ['artists', 'Artists']];
   let h = `<header class="page-head"><h1>Your library</h1><p class="sub">${plural(tracks.length, 'song')}${tracks.length ? ' · ' + longTime(totalDur(tracks.map(t => t.id))) : ''}</p></header>`;
-  h += `<section class="sec"><div class="sec-head"><h2>Playlists</h2></div>${collectionCards()}</section>`;
-  h += `<section class="sec"><div class="sec-head"><h2>All songs</h2><div class="sec-tools"><select class="sort" aria-label="Sort songs"><option value="added"${sortMode === 'added' ? ' selected' : ''}>Oldest first</option><option value="newest"${sortMode === 'newest' ? ' selected' : ''}>Recently added</option><option value="title"${sortMode === 'title' ? ' selected' : ''}>Title</option><option value="artist"${sortMode === 'artist' ? ' selected' : ''}>Artist</option></select></div></div>`;
+  h += `<div class="chips tabs" role="tablist">${tabs.map(([k, l]) => `<button class="chip${libTab === k ? ' on' : ''}" role="tab" aria-selected="${libTab === k}" data-act="tab" data-v="${k}">${l}</button>`).join('')}</div>`;
+  if (libTab === 'playlists') return h + collectionCards();
+  if (libTab === 'artists') { const l = artistList(); return h + (l.length ? `<div class="cards">${artistCards(l)}</div>` : `<div class="empty"><h3>No artists yet</h3><p>Artists appear once you have songs.</p></div>`); }
+  const all = listIds('all');
+  h += sortChips();
   h += all.length ? rows(all, 'all') : `<div class="empty"><h3>Your library is empty</h3><p>Add songs from your phone or computer to start listening.</p><button class="btn primary" data-act="import">${ico('plus')}Add music</button></div>`;
-  return h + '</section>';
+  return h;
 }
+let heroColor = null;
 function collectionView(kind, id) {
-  let name, key, artHtml, ids, canEdit = false, empty;
-  if (kind === 'liked') { name = 'Liked songs'; key = 'liked'; ids = listIds('liked'); artHtml = specialArt('liked'); empty = ['No liked songs yet', 'Tap the heart next to a song to keep it here.']; }
-  else if (kind === 'recent') { name = 'Recently played'; key = 'recent'; ids = listIds('recent'); artHtml = specialArt('recent'); empty = ['Nothing played yet', 'Songs you listen to will show up here.']; }
+  let name, key, artHtml, ids, label = 'Playlist', hue = 200, canEdit = false, round = false, empty, p = null, hero = null;
+  if (kind === 'liked') { name = 'Liked songs'; key = 'liked'; ids = listIds(key); artHtml = specialArt('liked'); hue = 335; empty = ['No liked songs yet', 'Tap the heart next to a song to keep it here.']; }
+  else if (kind === 'recent') { name = 'Recently played'; key = 'recent'; ids = listIds(key); artHtml = specialArt('recent'); hue = 200; label = 'History'; empty = ['Nothing played yet', 'Songs you listen to will show up here.']; }
+  else if (kind === 'mix') { const m = MIXES[id] || MIXES.daily; name = m.name; key = 'mix:' + (MIXES[id] ? id : 'daily'); ids = listIds(key); artHtml = mixArt(MIXES[id] ? id : 'daily'); hue = m.h; label = 'Mix'; empty = ['Nothing here yet', 'Play a few songs and this mix will fill up.']; }
+  else if (kind === 'artist') { name = id; key = 'artist:' + id; ids = listIds(key); artHtml = art(T(ids[0]), 'round'); round = true; label = 'Artist'; hue = trackAcc(T(ids[0])).h; empty = ['No songs', 'This artist has no songs in your library.']; }
   else {
-    const p = playlists.find(x => x.id === id);
-    if (!p) { return `<div class="empty"><h3>This playlist is gone</h3><button class="btn primary" data-nav="library">Go to your library</button></div>`; }
-    name = p.name; key = 'pl:' + p.id; ids = listIds(key); artHtml = mosaic(ids); canEdit = true; empty = ['This playlist is empty', 'Add songs from your library, or bring in new ones from your device.'];
+    p = playlists.find(x => x.id === id);
+    if (!p) return `<div class="empty"><h3>This playlist is gone</h3><button class="btn primary" data-nav="library">Go to your library</button></div>`;
+    name = p.name; key = 'pl:' + p.id; ids = listIds(key); artHtml = plArt(p); canEdit = true;
+    hue = p.acc ? p.acc[0] : ids.length ? trackAcc(T(ids[0])).h : hash(p.name) % 360;
+    if (p.acc) hero = `hsl(${p.acc[0]} ${p.acc[1]}% 40%)`;
+    empty = ['Let’s fill this playlist', 'Add songs from your library and they’ll show up here.'];
   }
+  hero = hero || `hsl(${hue} 50% 38%)`; heroColor = hero;
   const total = totalDur(ids);
-  let h = `<header class="col-head">${artHtml}<div class="col-meta"><h1 dir="auto">${esc(name)}</h1><p class="sub">${plural(ids.length, 'song')}${total ? ' · ' + longTime(total) : ''}</p>
-    <div class="col-actions"><button class="btn primary" data-act="play-list" data-list="${key}">${ico('play', 'fillicon')}Play</button><button class="btn" data-act="shuffle-list" data-list="${key}">${ico('shuffle')}Shuffle</button>`;
-  if (canEdit) h += `<button class="btn" data-act="add-songs" data-id="${id}">${ico('plus')}Add songs</button><button class="icon-btn" data-act="pl-menu" data-id="${id}" aria-haspopup="menu" aria-label="Playlist options">${ico('more')}</button>`;
-  h += `</div></div></header>`;
+  let h = `<header class="col-hero" style="--hero:${hero}">`;
+  h += canEdit
+    ? `<button class="col-cover" data-act="pick-cover" data-id="${p.id}" aria-label="Change playlist picture">${artHtml}<span class="cover-badge">${ico('camera')}</span></button>`
+    : `<div class="col-cover${round ? ' round' : ''}">${artHtml}</div>`;
+  h += `<div class="col-meta"><p class="kind">${label}</p><h1 dir="auto">${esc(name)}</h1><p class="sub">${plural(ids.length, 'song')}${total ? ' · ' + longTime(total) : ''}</p></div></header>`;
+  h += `<div class="col-bar"><button class="fab" data-act="play-list" data-list="${key}" aria-label="Play">${ico('play', 'fillicon')}</button><button class="icon-btn lg" data-act="shuffle-list" data-list="${key}" aria-label="Shuffle" title="Shuffle">${ico('shuffle')}</button>`;
+  if (canEdit) h += `<button class="btn" data-act="add-songs" data-id="${p.id}">${ico('plus')}Add songs</button><button class="icon-btn lg" data-act="pl-menu" data-id="${p.id}" aria-haspopup="menu" aria-label="Playlist options">${ico('more')}</button>`;
+  h += `</div>`;
   if (ids.length) h += rows(ids, key);
-  else h += `<div class="empty"><h3>${empty[0]}</h3><p>${empty[1]}</p>${canEdit ? `<button class="btn primary" data-act="add-songs" data-id="${id}">${ico('plus')}Add songs</button>` : ''}</div>`;
+  else h += `<div class="empty"><h3>${empty[0]}</h3><p>${empty[1]}</p>${canEdit ? `<button class="btn primary" data-act="add-songs" data-id="${p.id}">${ico('plus')}Add songs</button>` : ''}</div>`;
   return h;
 }
 function searchView() {
@@ -1324,7 +1485,7 @@ function searchView() {
   const ids = listIds('search'), q = norm(query);
   const pls = playlists.filter(p => norm(p.name).includes(q));
   let h = `<header class="page-head"><h1 dir="auto">Results for “${esc(query.trim())}”</h1><p class="sub">${plural(ids.length, 'song')}${pls.length ? ' · ' + plural(pls.length, 'playlist') : ''}</p></header>`;
-  if (pls.length) h += `<section class="sec"><div class="sec-head"><h2>Playlists</h2></div><div class="cards">${pls.map(p => colCard('playlist', p.id, p.name, plural(p.ids.length, 'song'), mosaic(p.ids))).join('')}</div></section>`;
+  if (pls.length) h += `<section class="sec"><div class="sec-head"><h2>Playlists</h2></div><div class="cards">${pls.map(p => colCard('playlist', p.id, p.name, plural(p.ids.length, 'song'), plArt(p))).join('')}</div></section>`;
   if (ids.length) h += `<section class="sec"><div class="sec-head"><h2>Songs</h2></div>${rows(ids, 'search')}</section>`;
   if (!ids.length && !pls.length) h += `<div class="empty"><h3>No matches</h3><p>Check the spelling, or try fewer words.</p></div>`;
   return h;
@@ -1334,7 +1495,9 @@ function renderView() {
   v.innerHTML = view.name === 'home' ? homeView()
     : view.name === 'library' ? libraryView()
     : view.name === 'search' ? searchView()
-    : collectionView(view.name === 'playlist' ? 'playlist' : view.name, view.id);
+    : (heroColor = null, collectionView(view.name, view.id));
+  const mainEl = $('#main');
+  if (['liked', 'recent', 'playlist', 'artist', 'mix'].includes(view.name) && heroColor) mainEl.style.setProperty('--hero', heroColor); else mainEl.style.removeProperty('--hero');
   markCurrent(); syncLikes();
 }
 function renderSidebar() {
@@ -1346,7 +1509,7 @@ function setNavState() {
   const n = view.name;
   $$('.nav-item[data-nav],.tab[data-nav]').forEach(b => {
     const k = b.dataset.nav; let on = false;
-    if (b.classList.contains('tab')) on = (k === 'home' && n === 'home') || (k === 'search' && n === 'search') || (k === 'library' && ['library', 'liked', 'recent', 'playlist'].includes(n));
+    if (b.classList.contains('tab')) on = (k === 'home' && n === 'home') || (k === 'search' && n === 'search') || (k === 'library' && ['library', 'liked', 'recent', 'playlist', 'artist', 'mix'].includes(n));
     else if (k === 'pl') on = n === 'playlist' && b.dataset.id === view.id;
     else on = k === n;
     if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
@@ -1420,24 +1583,58 @@ function playlistPicker(id, anchor) {
 }
 function playlistMenu(plId, anchor) {
   const p = playlists.find(x => x.id === plId); if (!p) return;
-  openMenu(anchor, [
-    { label: 'Rename playlist', icon: 'edit', run: async () => { const n = await askName({ title: 'Rename playlist', desc: 'Choose a new name.', ok: 'Save', value: p.name }); if (n) { p.name = n; save(); render(); toast('Playlist renamed'); } } },
-    { label: 'Delete playlist', icon: 'trash', danger: true, run: async () => { if (await confirmDialog({ title: 'Delete this playlist?', text: `“${p.name}” will be deleted. Your songs stay in the library.`, ok: 'Delete' })) { playlists = playlists.filter(x => x.id !== p.id); save(); go('library'); toast('Playlist deleted'); } } }
-  ]);
+  const items = [
+    { label: 'Edit name and picture', icon: 'edit', run: () => editPlaylist(p) },
+    { label: 'Change picture', icon: 'camera', run: () => { coverMode = 'pl:' + p.id; $('#coverInput').click(); } }
+  ];
+  if (p.cover) items.push({ label: 'Remove picture', icon: 'close', run: () => { p.cover = null; p.acc = null; save(true); render(); toast('Picture removed'); } });
+  items.push({ label: 'Delete playlist', icon: 'trash', danger: true, run: async () => { if (await confirmDialog({ title: 'Delete this playlist?', text: `“${p.name}” will be deleted. Your songs stay in the library.`, ok: 'Delete' })) { playlists = playlists.filter(x => x.id !== p.id); save(true); go('library'); toast('Playlist deleted'); } } });
+  openMenu(anchor, items);
+}
+async function editPlaylist(p) {
+  const r = await askPlaylist({ title: 'Edit playlist', ok: 'Save', name: p.name, cover: p.cover ? { url: p.cover, acc: p.acc } : null });
+  if (!r) return;
+  p.name = r.name; p.cover = r.cover ? r.cover.url : null; p.acc = r.cover ? r.cover.acc : null;
+  save(true); render(); toast('Playlist updated');
 }
 
 /* ---------- dialogs ---------- */
 $$('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
-function askName({ title, desc, ok, value = '' }) {
+let coverMode = null, formCover = null;
+function paintCoverPick() {
+  const btn = $('#coverPick');
+  btn.style.backgroundImage = formCover ? `url(${formCover.url})` : '';
+  btn.classList.toggle('has', !!formCover);
+  $('#coverClear').hidden = !formCover;
+}
+function askPlaylist({ title, ok, name = '', cover = null }) {
   return new Promise(res => {
     const d = $('#nameDlg'), input = $('#nameInput'); let result = null;
-    $('#nameTitle').textContent = title; $('#nameDesc').textContent = desc; $('#nameOk').textContent = ok; input.value = value;
-    $('#nameForm').onsubmit = e => { e.preventDefault(); const v = input.value.trim(); if (!v) { input.focus(); return; } result = v; d.close(); };
+    formCover = cover ? { url: cover.url, acc: cover.acc } : null;
+    $('#nameTitle').textContent = title; $('#nameOk').textContent = ok; input.value = name;
+    const count = () => { $('#nameCount').textContent = `${input.value.length}/60`; };
+    count(); paintCoverPick();
+    input.oninput = count;
+    $('#coverPick').onclick = () => { coverMode = 'form'; $('#coverInput').click(); };
+    $('#coverClear').onclick = () => { formCover = null; paintCoverPick(); };
+    $('#nameForm').onsubmit = e => { e.preventDefault(); const v = input.value.trim(); if (!v) { input.focus(); return; } result = { name: v, cover: formCover }; d.close(); };
     $('#nameCancel').onclick = () => d.close();
     d.onclose = () => res(result);
     d.showModal(); input.focus(); input.select();
   });
 }
+$('#coverInput').addEventListener('change', async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  try {
+    const cv = await imageToCover(f);
+    if (coverMode === 'form') { formCover = cv; paintCoverPick(); }
+    else if (coverMode && coverMode.startsWith('pl:')) {
+      const p = playlists.find(x => x.id === coverMode.slice(3));
+      if (p) { p.cover = cv.url; p.acc = cv.acc; save(true); render(); toast('Picture updated'); }
+    }
+  } catch (err) { toast('Couldn’t use that picture. Try a JPG or PNG.'); }
+});
 function confirmDialog({ title, text, ok }) {
   return new Promise(res => {
     const d = $('#confirmDlg'); let result = false;
@@ -1449,11 +1646,13 @@ function confirmDialog({ title, text, ok }) {
   });
 }
 async function createPlaylist(addId) {
-  const name = await askName({ title: 'Create a playlist', desc: addId ? 'Give it a name. The song will be added right away.' : 'Give it a name. You can add songs right after.', ok: 'Create' });
-  if (!name) return;
-  const p = { id: 'pl-' + uid(), name, ids: addId ? [addId] : [] };
-  playlists.push(p); save();
-  if (addId) { renderSidebar(); toast(`Added to ${name}`); } else { renderSidebar(); go('playlist', p.id); }
+  const r = await askPlaylist({ title: 'Create a playlist', ok: 'Create', name: `My playlist #${playlists.length + 1}` });
+  if (!r) return;
+  const p = { id: 'pl-' + uid(), name: r.name, ids: addId ? [addId] : [], cover: r.cover ? r.cover.url : null, acc: r.cover ? r.cover.acc : null };
+  playlists.push(p); save(true); renderSidebar();
+  if (addId) { toast(`Added to ${r.name}`); return; }
+  go('playlist', p.id);
+  if (tracks.length) setTimeout(() => openPick(p.id), 250);
 }
 let pickPl = null;
 function renderPick() {
@@ -1498,6 +1697,9 @@ function ctl(k) {
 function act(a, el) {
   const row = el.closest('.track');
   switch (a) {
+    case 'sort': sortMode = el.dataset.v; save(); renderView(); break;
+    case 'tab': libTab = el.dataset.v; if (el.dataset.go) go(el.dataset.go); else renderView(); break;
+    case 'pick-cover': coverMode = 'pl:' + el.dataset.id; $('#coverInput').click(); break;
     case 'grant': try { WaveNative.requestPermission(); } catch (e) {} break;
     case 'rescan': window.__waveSync(); toast('Library updated'); break;
     case 'import': importTarget = null; $('#filePicker').click(); break;
@@ -1531,7 +1733,6 @@ document.addEventListener('click', e => {
   const a = t.closest('[data-act]'); if (a) { act(a.dataset.act, a); return; }
   const row = t.closest('.track'); if (row && !t.closest('button')) rowPlay(row);
 });
-document.addEventListener('change', e => { if (e.target.classList?.contains('sort')) { sortMode = e.target.value; save(); renderView(); } });
 document.addEventListener('contextmenu', e => { const row = e.target.closest('.track'); if (row && matchMedia('(hover:hover)').matches) { e.preventDefault(); trackMenu(row.dataset.id, row.querySelector('.more') || row, row.closest('[data-list]')?.dataset.list); } });
 
 /* seek + volume sliders */
@@ -1564,9 +1765,9 @@ audio.addEventListener('timeupdate', () => {
 audio.addEventListener('loadedmetadata', () => {
   const t = T(curId);
   if (t && loadedId === curId && Number.isFinite(audio.duration) && Math.abs((t.duration || 0) - audio.duration) > 1) { t.duration = audio.duration; save(); }
-  syncTime(); updatePosition();
+  syncTime(); updatePosition(); nativeNotify(true);
 });
-audio.addEventListener('seeked', () => { syncTime(); updatePosition(); });
+audio.addEventListener('seeked', () => { syncTime(); updatePosition(); nativeNotify(true); });
 audio.addEventListener('error', () => {
   if (!audio.getAttribute('src') || loadedId !== curId) return;
   playing = false; syncPlayState(); errorStreak++;
@@ -1633,6 +1834,14 @@ document.addEventListener('keydown', e => {
 
 /* hooks used by the Android app */
 window.__waveSync = () => { if (!NATIVE) return; nativeScan(); render(); updateMeta(); };
+window.__waveCtl = c => {
+  if (c === 'play') { if (!playing) togglePlay(); }
+  else if (c === 'pause') { if (playing) togglePlay(); }
+  else if (c === 'toggle') togglePlay();
+  else if (c === 'next') advance(1, false);
+  else if (c === 'prev') prev();
+};
+window.__waveSeek = s => seekTo(s);
 window.__waveBack = () => {
   if (!$('#menu').hidden) { closeMenu(); return true; }
   const d = document.querySelector('dialog[open]'); if (d) { d.close(); return true; }
