@@ -1,6 +1,14 @@
 WAVE for Android  -  your phone's music, found automatically  (version 2)
 ==============================================================
 
+NEW IN VERSION 5 - SMOOTHER AND GLASSIER
+- Stronger glass theme: frosted bars, glowing colour blobs that slowly drift behind everything.
+- Swipe down on the full-screen player and it tucks into the bottom bar. Swipe up on the bar to open it.
+- Playlist page: the big cover shrinks and fades while you scroll, then a slim bar with the
+  playlist name and a play button takes its place. Back button on every playlist/artist page.
+- Animations everywhere: pages slide in, lists appear one by one, hearts pop, menus and sheets glide.
+- Trending (Tunisia / worldwide) removed. Discover now only searches what you type.
+
 NEW IN VERSION 4 - NEW LOOK
 - Spotify-style design: black background, green accent, round green play buttons,
   white progress bars that turn green when touched, play button on cards.
@@ -12,8 +20,6 @@ NEW IN VERSION 4 - NEW LOOK
 
 NEW IN VERSION 3 - DISCOVER (needs internet)
 - New "Discover" tab: search any song by name, listen, like it, or add it to a playlist.
-- Trending in Tunisia and Trending worldwide (Deezer charts), on Home and in Discover.
-  "Save as playlist" turns a whole chart into one of your playlists.
 - Two sources: "Hits" (30-second previews of popular songs) and "Free full songs"
   (complete tracks by independent artists on Audius).
 - Full commercial songs cannot be streamed for free outside the big music apps, so for those the

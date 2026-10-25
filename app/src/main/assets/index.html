@@ -263,8 +263,8 @@ input[type=range]:hover::-moz-range-thumb,input[type=range]:focus-visible::-moz-
 .tab[aria-current=page] svg{color:var(--acc)}
 
 /* now playing */
-.np{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:var(--bg);transform:translateY(100%);visibility:hidden;transition:transform .4s cubic-bezier(.2,.8,.2,1),visibility 0s linear .4s}
-.np.open{transform:none;visibility:visible;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.np{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:var(--bg);transform:translateY(100%);visibility:hidden;will-change:transform;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .3s,visibility 0s linear .5s}
+.np.open{transform:none;visibility:visible;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .3s}
 .np-glow{position:absolute;inset:0;pointer-events:none}
 .np-top{position:relative;display:flex;align-items:center;justify-content:space-between;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 4px}
 .np-top .label{font-weight:700;color:var(--muted);font-size:14px}
@@ -547,6 +547,119 @@ body.glass .np-glow{opacity:1}
 .brand .icon-btn{margin-left:auto}
 .mobile-head .icon-btn{margin-left:auto}
 
+/* ============ MORE GLASS ============ */
+.blob{position:absolute;border-radius:50%;opacity:0;pointer-events:none;will-change:transform;transition:opacity .8s}
+.b1{width:70vmax;height:70vmax;left:-26vmax;top:-24vmax;background:radial-gradient(circle,hsla(var(--h),85%,55%,.62),transparent 66%);animation:drift1 24s ease-in-out infinite alternate}
+.b2{width:60vmax;height:60vmax;right:-24vmax;top:18%;background:radial-gradient(circle,hsla(calc(var(--h) + 70),85%,58%,.5),transparent 66%);animation:drift2 30s ease-in-out infinite alternate}
+.b3{width:56vmax;height:56vmax;left:6%;bottom:-26vmax;background:radial-gradient(circle,hsla(calc(var(--h) - 60),80%,52%,.5),transparent 66%);animation:drift3 36s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate3d(16vmax,12vmax,0) scale(1.18)}}
+@keyframes drift2{to{transform:translate3d(-14vmax,-10vmax,0) scale(1.12)}}
+@keyframes drift3{to{transform:translate3d(12vmax,-14vmax,0) scale(1.2)}}
+body.glass .blob{opacity:1}
+.ambient::after{display:none!important}
+body.glass{
+  --sb-bg:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.04));
+  --dock-bg:linear-gradient(135deg,rgba(255,255,255,.26),rgba(255,255,255,.08));
+  --tab-bg:linear-gradient(180deg,rgba(255,255,255,.17),rgba(255,255,255,.07));
+  --pop-bg:linear-gradient(140deg,rgba(255,255,255,.22),rgba(255,255,255,.07));
+  --blur:46px;
+  --edge:rgba(255,255,255,.3);
+  --card:linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.05));
+  --card-hover:linear-gradient(145deg,rgba(255,255,255,.3),rgba(255,255,255,.1));
+}
+body.glass .dock,body.glass .tabbar,body.glass .sidebar{backdrop-filter:blur(var(--blur)) saturate(1.9) brightness(1.08)}
+body.glass dialog,body.glass .menu{background:var(--pop-bg),rgba(18,18,24,.5);backdrop-filter:blur(var(--blur)) saturate(1.9)}
+body.glass .dock{box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 0 0 1px rgba(255,255,255,.06),0 26px 70px rgba(0,0,0,.45)}
+body.glass .tabbar{box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+body.glass .tile,body.glass .card,body.glass .chip,body.glass .searchbar,body.glass .empty,body.glass .welcome,body.glass .btn,body.glass .queue{backdrop-filter:none;border:1px solid var(--edge);box-shadow:inset 0 1px 0 rgba(255,255,255,.38),0 10px 30px rgba(0,0,0,.18)}
+body.glass .searchbar{background:linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.07))}
+body.glass .chips:not(.tabs) .chip{background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.03))}
+body.glass .chip.on,body.glass .btn.primary{background:var(--acc);border-color:rgba(255,255,255,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 8px 24px color-mix(in srgb,var(--acc) 40%,transparent)}
+body.glass .chips:not(.tabs) .chip.on{background:color-mix(in srgb,var(--acc) 28%,rgba(255,255,255,.08));box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+body.glass .track:hover{background:linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,.04))}
+body.glass .track.is-current{background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 26%,rgba(255,255,255,.08)),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+body.glass .queue{border-radius:24px}
+body.glass .cs-bg{background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.07)),color-mix(in srgb,var(--hero) 45%,rgba(10,10,14,.5))}
+body.glass .col-back{background:linear-gradient(145deg,rgba(255,255,255,.3),rgba(255,255,255,.1));border:1px solid var(--edge)}
+
+/* ============ ANIMATIONS ============ */
+@keyframes rise{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes sheetIn{from{opacity:0;transform:translate3d(0,34px,0) scale(.97)}to{opacity:1;transform:none}}
+@keyframes menuIn{from{opacity:0;transform:scale(.93) translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes dockIn{from{opacity:0;transform:translate3d(0,46px,0) scale(.95)}to{opacity:1;transform:none}}
+@keyframes heartPop{0%{transform:scale(1)}30%{transform:scale(1.5)}60%{transform:scale(.88)}100%{transform:scale(1)}}
+@keyframes tabPop{0%{transform:scale(.6) translateY(4px)}100%{transform:none}}
+@keyframes shimmer{to{background-position:-200% 0}}
+#view.view-in>*{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+#view.view-in>*:nth-child(2){animation-delay:.06s}
+#view.view-in>*:nth-child(3){animation-delay:.12s}
+#view.view-in>*:nth-child(4){animation-delay:.18s}
+#view.view-in>*:nth-child(5){animation-delay:.24s}
+#view.view-in>*:nth-child(6){animation-delay:.3s}
+#view.view-in>*:nth-child(n+7){animation-delay:.36s}
+#view.view-in .tile{animation:rise .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 55ms + 60ms)}
+#view.view-in .track{animation:rise .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--n,0) * 32ms + 80ms)}
+#view.view-in .rail .card:nth-child(1){animation:rise .55s cubic-bezier(.2,.8,.2,1) .18s both}
+#view.view-in .rail .card:nth-child(2){animation:rise .55s cubic-bezier(.2,.8,.2,1) .26s both}
+#view.view-in .rail .card:nth-child(3){animation:rise .55s cubic-bezier(.2,.8,.2,1) .34s both}
+#view.view-in .rail .card:nth-child(n+4){animation:rise .55s cubic-bezier(.2,.8,.2,1) .4s both}
+.card,.tile,.chip,.btn,.fab,.icon-btn,.nav-item,.tab,.t-play,.col-back{touch-action:manipulation;transition:transform .22s cubic-bezier(.2,.8,.2,1),background .22s,box-shadow .22s,opacity .22s,color .2s}
+.card:active,.tile:active,.chip:active,.btn:active{transform:scale(.96)}
+.track{transition:background .2s,transform .15s}
+.track:active{transform:scale(.985)}
+@media(hover:hover){.card:hover{transform:translateY(-4px)}.tile:hover{transform:translateY(-2px)}}
+.tab[aria-current=page] svg{animation:tabPop .5s cubic-bezier(.3,1.6,.5,1)}
+.like.pop svg{animation:heartPop .55s cubic-bezier(.3,1.4,.5,1)}
+.dock{animation:dockIn .6s cubic-bezier(.2,.8,.2,1)}
+dialog[open]{animation:sheetIn .42s cubic-bezier(.2,.8,.2,1)}
+dialog[open]::backdrop{animation:fadeIn .35s}
+.menu:not([hidden]){animation:menuIn .25s cubic-bezier(.2,.8,.2,1);transform-origin:top right}
+.np.open .np-info,.np.open .np-seek,.np.open .np-controls,.np.open .np-vol{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.np.open .np-seek{animation-delay:.06s}.np.open .np-controls{animation-delay:.12s}.np.open .np-vol{animation-delay:.18s}
+.q-row{animation:rise .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k,0) * 45ms)}
+.play-btn,.fab{transition:transform .2s cubic-bezier(.3,1.5,.5,1),filter .2s}
+.toast{transition:opacity .3s,transform .4s cubic-bezier(.2,.9,.3,1.2)}
+.skeleton-list{display:flex;flex-direction:column;gap:12px;padding:6px 0}
+.sk-row{display:flex;align-items:center;gap:14px}
+.sk-row i{width:48px;height:48px;border-radius:8px;flex:none}
+.sk-row div{flex:1;display:flex;flex-direction:column;gap:9px}
+.sk-row b{height:11px;border-radius:6px;width:70%}
+.sk-row b+b{width:42%}
+.sk-row i,.sk-row b{background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.16) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:shimmer 1.3s linear infinite}
+.discover-hint{display:flex;flex-direction:column;align-items:center;text-align:center;padding:48px 20px;color:var(--muted);gap:8px}
+.discover-hint svg{width:44px;height:44px;color:var(--acc);margin-bottom:6px}
+.discover-hint h3{color:var(--text);font-size:20px;font-weight:800}
+.discover-hint p{max-width:340px}
+.track{content-visibility:auto;contain-intrinsic-size:auto 56px}
+
+/* ============ PLAYLIST HEADER THAT SHRINKS ON SCROLL ============ */
+.col-cover{transform-origin:50% 0;will-change:transform,opacity}
+.col-meta{will-change:transform,opacity}
+#colBar{position:fixed;z-index:30;top:0;left:var(--sidebar);right:0;height:calc(58px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 12px 0 12px;display:flex;align-items:center;gap:12px;pointer-events:none}
+#colBar[hidden]{display:none}
+.cs-bg{position:absolute;inset:0;background:linear-gradient(180deg,color-mix(in srgb,var(--hero) 78%,rgba(10,10,12,.88)),color-mix(in srgb,var(--hero) 58%,rgba(10,10,12,.85)));backdrop-filter:blur(26px) saturate(1.6);border-bottom:1px solid var(--edge);opacity:0;transition:opacity .3s}
+.col-back{position:relative;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;background:rgba(0,0,0,.42);backdrop-filter:blur(12px);color:#fff;pointer-events:auto}
+.col-back svg{width:22px;height:22px}
+.cs-title{position:relative;flex:1;min-width:0;font-weight:800;font-size:17px;letter-spacing:-.02em;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.fab.small{position:relative;width:42px;height:42px;opacity:0;transform:scale(.7);pointer-events:none}
+.fab.small svg{width:20px;height:20px}
+#colBar.show .cs-bg,#colBar.show .cs-title{opacity:1;transform:none}
+#colBar.show .fab.small{opacity:1;transform:none;pointer-events:auto}
+@media(max-width:899px){
+  #colBar{left:0}
+  body.view-col .topbar,body.view-col .mobile-head{display:none}
+  .col-hero{padding-top:calc(58px + env(safe-area-inset-top,0px))}
+}
+@media(max-width:700px){
+  .col-cover{width:min(66vw,280px)}
+  .col-hero{padding-bottom:14px}
+}
+.np-grip{position:absolute;z-index:2;top:calc(8px + env(safe-area-inset-top,0px));left:50%;width:44px;height:5px;margin-left:-22px;border-radius:99px;background:rgba(255,255,255,.32)}
+body.glass .tabbar{background:var(--tab-bg),rgba(10,10,14,.76)}
+body.glass .dock{background:var(--dock-bg),rgba(14,14,20,.55)}
+body.glass .sidebar{background:var(--sb-bg),rgba(8,8,12,.35)}
+
 </style>
 </head>
 <body>
@@ -583,13 +696,14 @@ body.glass .np-glow{opacity:1}
     <symbol id="i-playlist-add" viewBox="0 0 24 24"><path d="M4 6h12M4 12h8M4 18h7M18 10v8M14 14h8"/></symbol>
     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
     <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
     <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8h3.2L8.4 5.5h7.2L17.3 8h3.2a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1h-17a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.6"/></symbol>
     <symbol id="i-logo" viewBox="0 0 40 40"><defs><linearGradient id="lgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5df08c"/><stop offset="1" stop-color="#12b8a0"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lgrad)"/><path d="M11 22v-4M17 28V12M23 25v-9M29 22v-4" stroke="#06121a" stroke-width="3.4" stroke-linecap="round" fill="none"/></symbol>
     <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 15V9M9 19V5M14 17V7M19 15v-4"/></symbol>
   </defs>
 </svg>
 
-<div class="ambient" aria-hidden="true"><i id="amb1" class="on"></i><i id="amb2"></i></div>
+<div class="ambient" aria-hidden="true"><i id="amb1" class="on"></i><i id="amb2"></i><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
 
 <div class="shell">
   <aside class="sidebar" aria-label="Sidebar">
@@ -630,6 +744,8 @@ body.glass .np-glow{opacity:1}
   <button class="tab" data-act="import"><svg class="i"><use href="#i-plus"/></svg>Add music</button>
 </nav>
 
+<div id="colBar" hidden></div>
+
 <div class="dock" id="dock" hidden>
   <div class="dock-progress"><i id="dockBar"></i></div>
   <div class="now">
@@ -658,6 +774,7 @@ body.glass .np-glow{opacity:1}
 
 <section class="np" id="np" role="dialog" aria-modal="true" aria-label="Now playing" inert>
   <div class="np-glow" id="npGlow"></div>
+  <span class="np-grip" aria-hidden="true"></span>
   <div class="np-top">
     <button class="icon-btn" data-ctl="close-np" id="npClose" aria-label="Close now playing"><svg class="i"><use href="#i-down"/></svg></button>
     <span class="label">Now playing</span>
@@ -798,7 +915,7 @@ const sessionFiles = new Map(); // id -> File imported this session
 let curUrl = null, loadToken = 0, errorStreak = 0;
 const T = id => tmap.get(id);
 const online = new Map();   // songs found online (Deezer / Audius), kept when saved in a playlist or liked
-const discover = { tn: [], world: [], search: [], audius: [] };
+const discover = { search: [], audius: [] };
 const reindex = () => { tmap = new Map(); tracks.forEach(t => tmap.set(t.id, t)); online.forEach(t => tmap.set(t.id, t)); likedSet = new Set(liked); };
 
 /* ---------- IndexedDB (songs + covers) ---------- */
@@ -1005,30 +1122,6 @@ async function resolveRemote(t) {
   const d = await getJSON('https://api.deezer.com/track/' + t.rid);
   if (!d.preview) throw new Error('no preview');
   return d.preview;
-}
-async function tunisiaChart() {
-  try {
-    const s = await getJSON('https://api.deezer.com/search/playlist?q=' + encodeURIComponent('Top Tunisia'));
-    const list = (s.data || []).filter(p => /top\s+tuni/i.test(p.title || ''));
-    const p = list.find(x => /deezer/i.test((x.user && x.user.name) || '')) || list[0];
-    if (p) { const r = await getJSON(`https://api.deezer.com/playlist/${p.id}/tracks?limit=50`); if (r.data && r.data.length) { discover.tnLabel = 'Trending in Tunisia'; return r.data; } }
-  } catch (e) { /* fall back below */ }
-  const r = await getJSON('https://api.deezer.com/search?q=' + encodeURIComponent('tounsi') + '&limit=40');
-  discover.tnLabel = 'Tunisian music';
-  return r.data || [];
-}
-let chartsAt = 0, chartsPromise = null;
-function loadCharts(force) {
-  if (chartsPromise && !force && Date.now() - chartsAt < 15 * 60e3) return chartsPromise;
-  chartsAt = Date.now();
-  chartsPromise = (async () => {
-    const [w, t] = await Promise.allSettled([getJSON('https://api.deezer.com/chart/0/tracks?limit=50'), tunisiaChart()]);
-    if (w.status === 'fulfilled') discover.world = addOnline((w.value.data || []).filter(d => d.preview).map(dzTrack));
-    if (t.status === 'fulfilled') discover.tn = addOnline(t.value.filter(d => d.preview).map(dzTrack));
-    if (!discover.world.length && !discover.tn.length) throw new Error('offline');
-  })();
-  chartsPromise.catch(() => { chartsPromise = null; });
-  return chartsPromise;
 }
 async function onlineSearch(q, src) {
   if (src === 'audius') { const r = await getJSON(`https://api.audius.co/v1/tracks/search?query=${encodeURIComponent(q)}&limit=40&app_name=Wave`); return addOnline((r.data || []).map(auTrack)); }
@@ -1349,7 +1442,7 @@ function toggleLike(id) {
   if (!id || !tmap.has(id)) return;
   if (likedSet.has(id)) { liked = liked.filter(x => x !== id); toast('Removed from Liked songs'); }
   else { liked.unshift(id); toast('Saved to Liked songs'); }
-  reindex(); syncLikes(); save();
+  reindex(); syncLikes(); save(); popHearts(id);
   if (view.name === 'liked') renderView();
 }
 function setVolume(v, remember = true) {
@@ -1451,7 +1544,7 @@ function updateMeta() {
   $('#dock').hidden = !t;
   $$('.js-title').forEach(e => e.textContent = t ? t.name : '');
   $$('.js-artist').forEach(e => e.textContent = t ? t.artist : '');
-  $$('.js-art').forEach(e => e.innerHTML = art(t));
+  $$('.js-art').forEach(e => { const k = t ? t.id : ''; if (e.dataset.tid !== k) { e.innerHTML = art(t); e.dataset.tid = k; } });
   $$('.js-note').forEach(e => e.textContent = t && t.remote === 'deezer' ? '30-second preview · Deezer' : t && t.remote === 'audius' ? 'Full song · Audius' : '');
   document.title = t ? `${t.name} · Wave` : 'Wave';
   const a = trackAcc(t), key = `${a.h}-${a.s}-${a.l}`;
@@ -1466,7 +1559,7 @@ function renderQueue() {
   let html = `<h3>Up next<span>${up.length ? plural(up.length, 'song') : ''}</span></h3>`;
   if (!up.length) html += `<div class="q-none">You’re at the end of the queue. Choose another song, or turn on repeat.</div>`;
   else {
-    html += up.slice(0, 40).map((id, k) => { const t = T(id); return `<button class="q-row" data-act="jump" data-i="${qi + 1 + k}">${art(t)}<span class="t-text"><span class="t-title" style="display:block" dir="auto">${esc(t.name)}</span><span class="t-artist" style="display:block;color:var(--muted)" dir="auto">${esc(t.artist)}</span></span></button>`; }).join('');
+    html += up.slice(0, 40).map((id, k) => { const t = T(id); return `<button class="q-row" style="--k:${Math.min(k, 10)}" data-act="jump" data-i="${qi + 1 + k}">${art(t)}<span class="t-text"><span class="t-title" style="display:block" dir="auto">${esc(t.name)}</span><span class="t-artist" style="display:block;color:var(--muted)" dir="auto">${esc(t.artist)}</span></span></button>`; }).join('');
     if (up.length > 40) html += `<div class="q-more">and ${up.length - 40} more</div>`;
   }
   el.innerHTML = html;
@@ -1558,18 +1651,58 @@ function openNp() {
 }
 function closeNp() {
   const np = $('#np'); if (!npOpen && !np.classList.contains('open')) return;
+  np.style.transform = ''; np.style.opacity = '';
   np.classList.remove('open'); np.inert = true; document.body.classList.remove('lock'); npOpen = false;
   cancelAnimationFrame(vizRaf); vizRaf = 0;
   const r = window._npReturn; if (r && r.focus && document.contains(r)) r.focus({ preventScroll: true });
 }
 window.addEventListener('resize', () => { if (npOpen) { resizeViz(); startViz(); } });
+function popHearts(id) {
+  $$(`.track[data-id="${id}"] .like`).forEach(b => { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); });
+  if (id === curId) $$('.js-like').forEach(b => { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); });
+}
+/* swipe down on the player to tuck it into the bottom bar; swipe up on the bar to open it */
+(function gestures() {
+  const np = $('#np'), sc = $('.np-scroll'), dock = $('#dock');
+  let sx = 0, sy = 0, dy = 0, mode = null, t0 = 0;
+  np.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) { mode = null; return; }
+    np.style.transform = ''; np.style.opacity = ''; np.style.transition = '';
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dy = 0; t0 = Date.now();
+    mode = e.target.closest('input[type=range]') ? 'skip' : 'pending';
+  }, { passive: true });
+  np.addEventListener('touchmove', e => {
+    if (!mode || mode === 'skip') return;
+    const t = e.touches[0], dx = t.clientX - sx; dy = t.clientY - sy;
+    if (mode === 'pending') {
+      if (Math.abs(dy) < 8 && Math.abs(dx) < 8) return;
+      if (dy > 0 && Math.abs(dy) > Math.abs(dx) * 1.2 && sc.scrollTop <= 0) { mode = 'drag'; np.style.transition = 'none'; }
+      else { mode = 'skip'; return; }
+    }
+    e.preventDefault();
+    const d = Math.max(0, dy);
+    np.style.transform = `translate3d(0,${d}px,0) scale(${1 - Math.min(d, 500) / 2400})`;
+    np.style.opacity = String(1 - Math.min(d, 700) / 1400);
+  }, { passive: false });
+  const end = () => {
+    if (mode !== 'drag') { mode = null; return; }
+    mode = null; np.style.transition = '';
+    const fast = dy / Math.max(1, Date.now() - t0) > 0.7;
+    np.style.transform = ''; np.style.opacity = '';
+    if (dy > 130 || fast) closeNp();
+  };
+  np.addEventListener('touchend', end); np.addEventListener('touchcancel', end);
+  let ds = null;
+  dock.addEventListener('touchstart', e => { ds = (e.touches.length === 1 && !e.target.closest('input[type=range]')) ? e.touches[0].clientY : null; }, { passive: true });
+  dock.addEventListener('touchend', e => { if (ds != null && e.changedTouches[0] && ds - e.changedTouches[0].clientY > 36) openNp(); ds = null; });
+})();
 
 /* ---------- screens ---------- */
 const greeting = () => { const h = new Date().getHours(); return h >= 5 && h < 12 ? 'Good morning' : h >= 12 && h < 18 ? 'Good afternoon' : 'Good evening'; };
 const totalDur = ids => ids.reduce((s, id) => s + (T(id)?.duration || 0), 0);
 function rowHTML(t, n) {
   const l = likedSet.has(t.id), nm = esc(t.name);
-  return `<div class="track${t.id === curId ? ' is-current' : ''}" data-id="${t.id}" tabindex="0">
+  return `<div class="track${t.id === curId ? ' is-current' : ''}" data-id="${t.id}" tabindex="0" style="--n:${Math.min(n, 14)}">
     <div class="t-idx"><span class="num">${n}</span><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><button class="t-play" data-act="row-play" tabindex="-1" aria-label="Play ${nm}">${ico('play', 'fillicon i-play')}${ico('pause', 'fillicon i-pause')}</button></div>
     <div class="t-main">${art(t)}<div class="t-text"><div class="t-title" dir="auto">${nm}${t.remote === 'deezer' ? '<span class="tag">30s</span>' : ''}</div><div class="t-artist" dir="auto">${esc(t.artist)}</div></div></div>
     <div class="t-album" dir="auto">${esc(t.album)}</div>
@@ -1610,7 +1743,7 @@ function quickTiles() {
     const t = T(id); if (t) items.push({ name: t.name, art: art(t), attrs: `data-act="play-card" data-list="${key}" data-id="${id}"` });
   }
   if (items.length % 2) items.pop();
-  return `<div class="tiles">${items.map(i => `<button class="tile" ${i.attrs}>${i.art}<span class="tile-name" dir="auto">${esc(i.name)}</span></button>`).join('')}</div>`;
+  return `<div class="tiles">${items.map((i, n) => `<button class="tile" style="--i:${n}" ${i.attrs}>${i.art}<span class="tile-name" dir="auto">${esc(i.name)}</span></button>`).join('')}</div>`;
 }
 function homeView() {
   if (!tracks.length && NATIVE) return nativeEmpty();
@@ -1627,23 +1760,12 @@ function homeView() {
   if (rc.length) h += section('Recently played', `<div class="rail">${rc.map(id => trackCard(id, 'recent')).join('')}</div>`, `<button class="link-btn" data-act="open-col" data-kind="recent">Show all</button>`);
   const mixKeys = ['daily', 'new'].concat(Object.keys(plays).length ? ['top'] : []);
   h += section('Made for you', `<div class="rail">${mixKeys.map(k => `<button class="card" data-act="open-col" data-kind="mix" data-id="${k}">${mixArt(k)}<div class="c-title trunc">${MIXES[k].name}</div><div class="c-sub two">${MIXES[k].sub}</div></button>`).join('')}</div>`);
-  if (NATIVE) { h += `<div id="homeCharts"></div>`; setTimeout(fillHomeCharts, 0); }
   h += section('Your playlists', `<div class="rail">${playlists.map(p => colCard('playlist', p.id, p.name, plural(p.ids.length, 'song'), plArt(p))).join('')}<button class="card new" data-act="new-playlist"><span class="art">${ico('plus')}</span><div class="c-title">New playlist</div><div class="c-sub">&nbsp;</div></button></div>`);
   const arts = artistList().filter(a => a.name !== 'Unknown artist').slice(0, 14);
   if (arts.length) h += section('Your artists', `<div class="rail">${artistCards(arts)}</div>`, `<button class="link-btn" data-act="tab" data-v="artists" data-go="library">Show all</button>`);
   const all = listIds('all');
   h += section('Your songs', rows(all, 'all', 8), all.length > 8 ? `<button class="link-btn" data-act="see-all">Show all ${all.length}</button>` : '');
   return h;
-}
-function fillHomeCharts() {
-  loadCharts().then(() => {
-    const el = $('#homeCharts'); if (!el || view.name !== 'home') return;
-    const rail = (k) => `<div class="rail">${discover[k].slice(0, 14).map(id => trackCard(id, 'online:' + k)).join('')}</div>`;
-    let h = '';
-    if (discover.tn.length) h += section(discover.tnLabel || 'Trending in Tunisia', rail('tn'), `<button class="link-btn" data-nav="discover">Show all</button>`);
-    if (discover.world.length) h += section('Trending worldwide', rail('world'), `<button class="link-btn" data-nav="discover">Show all</button>`);
-    el.innerHTML = h;
-  }).catch(() => {});
 }
 /* ---------- Discover (online) ---------- */
 const dState = { q: '', src: 'deezer', loading: false, error: '' };
@@ -1653,7 +1775,7 @@ function discoverView() {
   setTimeout(loadDiscover, 0);
   return `<header class="page-head"><h1>Discover</h1><p class="sub">Search any song online, listen, and add it to your playlists.</p></header>
   <form class="searchbar ds-search" id="dsForm" role="search">${ico('search')}<input id="dsInput" type="search" value="${esc(s.q)}" placeholder="Song or artist name" aria-label="Search online" autocomplete="off" enterkeyhint="search"></form>
-  <div class="chips" role="radiogroup" aria-label="Music source"><button class="chip${s.src === 'deezer' ? ' on' : ''}" role="radio" aria-checked="${s.src === 'deezer'}" data-act="ds-src" data-v="deezer">Hits · 30-second previews</button><button class="chip${s.src === 'audius' ? ' on' : ''}" role="radio" aria-checked="${s.src === 'audius'}" data-act="ds-src" data-v="audius">Free full songs</button></div>
+  <div class="chips" role="radiogroup" aria-label="Music source"><button class="chip${s.src === 'deezer' ? ' on' : ''}" role="radio" aria-checked="${s.src === 'deezer'}" data-act="ds-src" data-v="deezer">Songs · 30-second previews</button><button class="chip${s.src === 'audius' ? ' on' : ''}" role="radio" aria-checked="${s.src === 'audius'}" data-act="ds-src" data-v="audius">Free full songs</button></div>
   <p class="note">${s.src === 'deezer' ? 'Popular songs play as 30-second previews. To hear the whole song, open the ⋯ menu on a song and choose “Find full song on YouTube”.' : 'Complete songs from independent artists on Audius, free to stream.'}</p>
   <div id="dsResults"></div>`;
 }
@@ -1663,8 +1785,7 @@ async function loadDiscover() {
   s.error = '';
   try {
     if (s.q) { s.loading = true; paintDiscover(); discover.search = await onlineSearch(s.q, s.src); }
-    else if (s.src === 'deezer') { if (!discover.tn.length && !discover.world.length) { s.loading = true; paintDiscover(); } await loadCharts(); }
-    else { if (!discover.audius.length) { s.loading = true; paintDiscover(); discover.audius = await audiusTrending(); } }
+    else if (s.src === 'audius') { if (!discover.audius.length) { s.loading = true; paintDiscover(); discover.audius = await audiusTrending(); } }
   } catch (e) { if (token === dToken) s.error = 'Check your internet connection, then try again.'; }
   if (token !== dToken) return;
   s.loading = false; paintDiscover();
@@ -1672,18 +1793,16 @@ async function loadDiscover() {
 function paintDiscover() {
   const box = $('#dsResults'); if (!box || view.name !== 'discover') return;
   const s = dState;
-  if (s.loading) { box.innerHTML = `<div class="loading"><span class="spinner"></span>Loading…</div>`; return; }
+  if (s.loading) { box.innerHTML = `<div class="skeleton-list" aria-label="Loading">${'<div class="sk-row"><i></i><div><b></b><b></b></div></div>'.repeat(6)}</div>`; return; }
   if (s.error) { box.innerHTML = `<div class="empty"><h3>Couldn’t load music</h3><p>${esc(s.error)}</p><button class="btn primary" data-act="ds-retry">Try again</button></div>`; return; }
-  const tools = k => `<span class="sec-tools"><button class="link-btn" data-act="play-list" data-list="online:${k}">Play all</button><button class="link-btn" data-act="save-chart" data-k="${k}">Save as playlist</button></span>`;
   let h = '';
   if (s.q) {
     const ids = listIds('online:search');
     h = ids.length ? section(`Results for “${esc(s.q)}”`, rows(ids, 'online:search')) : `<div class="empty"><h3>No results</h3><p>Try another spelling, or switch the source above.</p></div>`;
-  } else if (s.src === 'deezer') {
-    if (discover.tn.length) h += section(discover.tnLabel || 'Trending in Tunisia', rows(discover.tn.filter(id => tmap.has(id)), 'online:tn'), tools('tn'));
-    if (discover.world.length) h += section('Trending worldwide', rows(discover.world.filter(id => tmap.has(id)), 'online:world'), tools('world'));
+  } else if (s.src === 'audius') {
+    h = section('Free songs trending this week', rows(discover.audius.filter(id => tmap.has(id)), 'online:audius'), `<span class="sec-tools"><button class="link-btn" data-act="play-list" data-list="online:audius">Play all</button></span>`);
   } else {
-    h = section('Trending free songs this week', rows(discover.audius.filter(id => tmap.has(id)), 'online:audius'), tools('audius'));
+    h = `<div class="discover-hint">${ico('globe')}<h3>Search any song</h3><p>Type a song or artist name above to hear a preview and add it to a playlist.</p></div>`;
   }
   box.innerHTML = h; markCurrent(); syncLikes();
 }
@@ -1699,7 +1818,7 @@ function libraryView() {
   h += all.length ? rows(all, 'all') : `<div class="empty"><h3>Your library is empty</h3><p>Add songs from your phone or computer to start listening.</p><button class="btn primary" data-act="import">${ico('plus')}Add music</button></div>`;
   return h;
 }
-let heroColor = null;
+let heroColor = null, colBar = null;
 function collectionView(kind, id) {
   let name, key, artHtml, ids, label = 'Playlist', hue = 200, canEdit = false, round = false, empty, p = null, hero = null;
   if (kind === 'liked') { name = 'Liked songs'; key = 'liked'; ids = listIds(key); artHtml = specialArt('liked'); hue = 335; empty = ['No liked songs yet', 'Tap the heart next to a song to keep it here.']; }
@@ -1714,7 +1833,7 @@ function collectionView(kind, id) {
     if (p.acc) hero = `hsl(${p.acc[0]} ${p.acc[1]}% 40%)`;
     empty = ['Let’s fill this playlist', 'Add songs from your library and they’ll show up here.'];
   }
-  hero = hero || `hsl(${hue} 50% 38%)`; heroColor = hero;
+  hero = hero || `hsl(${hue} 50% 38%)`; heroColor = hero; colBar = { name, key };
   const total = totalDur(ids);
   let h = `<header class="col-hero" style="--hero:${hero}">`;
   h += canEdit
@@ -1738,18 +1857,45 @@ function searchView() {
   if (!ids.length && !pls.length) h += `<div class="empty"><h3>No matches</h3><p>Check the spelling, or try fewer words.</p></div>`;
   return h;
 }
-function renderView() {
+const COL_VIEWS = ['liked', 'recent', 'playlist', 'artist', 'mix'];
+function renderView(animate) {
   const v = $('#view');
+  colBar = null; heroColor = null;
   v.innerHTML = view.name === 'home' ? homeView()
     : view.name === 'library' ? libraryView()
     : view.name === 'search' ? searchView()
     : view.name === 'discover' ? discoverView()
-    : (heroColor = null, collectionView(view.name, view.id));
+    : collectionView(view.name, view.id);
+  const isCol = COL_VIEWS.includes(view.name) && !!colBar;
   document.body.classList.toggle('view-discover', view.name === 'discover');
+  document.body.classList.toggle('view-col', isCol);
   const mainEl = $('#main');
-  if (['liked', 'recent', 'playlist', 'artist', 'mix'].includes(view.name) && heroColor) mainEl.style.setProperty('--hero', heroColor); else mainEl.style.removeProperty('--hero');
-  markCurrent(); syncLikes();
+  if (isCol && heroColor) mainEl.style.setProperty('--hero', heroColor); else mainEl.style.removeProperty('--hero');
+  setupColBar(isCol);
+  if (animate) { v.classList.remove('view-in'); void v.offsetWidth; v.classList.add('view-in'); }
+  markCurrent(); syncLikes(); onColScroll();
 }
+/* playlist header that shrinks and fades while you scroll */
+function setupColBar(isCol) {
+  const bar = $('#colBar');
+  if (!isCol) { bar.hidden = true; bar.innerHTML = ''; return; }
+  bar.hidden = false; bar.classList.remove('show');
+  bar.style.setProperty('--hero', heroColor || '#222');
+  bar.innerHTML = `<span class="cs-bg"></span><button class="col-back" data-act="back" aria-label="Back">${ico('chevron-left')}</button><span class="cs-title trunc" dir="auto">${esc(colBar.name)}</span><button class="fab small" data-act="play-list" data-list="${esc(colBar.key)}" aria-label="Play">${ico('play', 'fillicon')}</button>`;
+}
+let scrollTick = 0;
+function onColScroll() {
+  if (!document.body.classList.contains('view-col')) return;
+  const cover = $('.col-cover'), meta = $('.col-meta'), bar = $('#colBar');
+  if (!cover || !bar) return;
+  const y = Math.max(0, window.scrollY), h = cover.offsetHeight || 200;
+  const p = clamp(y / (h * 0.85), 0, 1);
+  cover.style.transform = `translate3d(0,${(y * 0.3).toFixed(1)}px,0) scale(${(1 - p * 0.5).toFixed(3)})`;
+  cover.style.opacity = String(Math.max(0, 1 - p * 1.2).toFixed(3));
+  if (meta) { meta.style.transform = `translate3d(0,${(y * 0.14).toFixed(1)}px,0)`; meta.style.opacity = String(Math.max(0, 1 - p * 1.6).toFixed(3)); }
+  bar.classList.toggle('show', y > h * 0.95);
+}
+window.addEventListener('scroll', () => { if (!scrollTick) scrollTick = requestAnimationFrame(() => { scrollTick = 0; onColScroll(); }); }, { passive: true });
 function renderSidebar() {
   $('#sidePlaylists').innerHTML = playlists.length
     ? playlists.map(p => `<button class="nav-item" data-nav="pl" data-id="${p.id}"><svg class="i"><use href="#i-list"/></svg><span class="trunc" dir="auto">${esc(p.name)}</span></button>`).join('')
@@ -1767,10 +1913,17 @@ function setNavState() {
 }
 function render() { renderSidebar(); renderView(); setNavState(); }
 function updateSearchUI() { $('#searchbar').classList.toggle('has-text', !!$('#search').value); }
-function go(name, id = null) {
+const navStack = [];
+function go(name, id = null, opts = {}) {
   if (query && name !== 'search') { query = ''; $('#search').value = ''; updateSearchUI(); }
+  if (!opts.back && (view.name !== name || view.id !== id)) { navStack.push({ name: view.name, id: view.id, y: window.scrollY }); if (navStack.length > 25) navStack.shift(); }
   view = { name, id }; prevView = null;
-  closeMenu(); renderView(); setNavState(); window.scrollTo(0, 0);
+  closeMenu(); renderView(true); setNavState(); window.scrollTo(0, opts.y || 0);
+}
+function goBack() {
+  const p = navStack.pop();
+  if (!p) { go('home', null, { back: true }); return; }
+  go(p.name, p.id, { back: true, y: p.y });
 }
 function navTo(k, id) {
   if (k === 'search') {
@@ -1778,6 +1931,7 @@ function navTo(k, id) {
     window.scrollTo(0, 0); $('#search').focus(); return;
   }
   if (k === 'pl') return go('playlist', id);
+  navStack.length = 0;
   go(k);
 }
 
@@ -1949,18 +2103,10 @@ function act(a, el) {
   const row = el.closest('.track');
   switch (a) {
     case 'ds-src': dState.src = el.dataset.v; renderView(); break;
-    case 'ds-retry': loadCharts(true).catch(() => {}); loadDiscover(); break;
-    case 'save-chart': {
-      const k = el.dataset.k, ids = (discover[k] || []).filter(id => tmap.has(id)); if (!ids.length) break;
-      const nm = k === 'tn' ? (discover.tnLabel || 'Trending in Tunisia') : k === 'world' ? 'Trending worldwide' : 'Trending free songs';
-      playlists.push({ id: 'pl-' + uid(), name: nm, ids: ids.slice(), cover: null, acc: null });
-      save(true); renderSidebar(); toast(`Saved “${nm}” as a playlist`); break;
-    }
-    case 'settings': renderSettings(); $('#settingsDlg').showModal(); break;
-    case 'set-theme': theme.mode = el.dataset.v; applyTheme(); renderSettings(); break;
-    case 'set-accent': theme.accent = el.dataset.v; applyTheme(); renderSettings(); break;
+    case 'ds-retry': loadDiscover(); break;
+    case 'back': goBack(); break;
     case 'sort': sortMode = el.dataset.v; save(); renderView(); break;
-    case 'tab': libTab = el.dataset.v; if (el.dataset.go) go(el.dataset.go); else renderView(); break;
+    case 'tab': libTab = el.dataset.v; if (el.dataset.go) go(el.dataset.go); else renderView(true); break;
     case 'pick-cover': coverMode = 'pl:' + el.dataset.id; $('#coverInput').click(); break;
     case 'grant': try { WaveNative.requestPermission(); } catch (e) {} break;
     case 'rescan': window.__waveSync(); toast('Library updated'); break;
@@ -2130,7 +2276,7 @@ window.__waveBack = () => {
   const d = document.querySelector('dialog[open]'); if (d) { d.close(); return true; }
   if (npOpen) { closeNp(); return true; }
   if (query) { $('#search').value = ''; $('#search').dispatchEvent(new Event('input')); return true; }
-  if (view.name !== 'home') { go('home'); return true; }
+  if (navStack.length || view.name !== 'home') { goBack(); return true; }
   return false;
 };
 
