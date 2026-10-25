@@ -27,6 +27,8 @@ import java.io.ByteArrayInputStream
 import java.io.FilterInputStream
 import java.io.InputStream
 import java.lang.ref.WeakReference
+import java.net.HttpURLConnection
+import java.net.URL
 
 /**
  * Hosts the Wave interface (assets/index.html) in a WebView and gives it:
@@ -77,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         web = WebView(this)
         webRef = WeakReference(web)
         setContentView(web)
-        web.setBackgroundColor(0xFF0B121A.toInt())
+        web.setBackgroundColor(0xFF0C0C0E.toInt())
         web.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
@@ -109,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                 return when {
                     path.startsWith("/media/") -> serveMedia(path.removePrefix("/media/").toLongOrNull(), request.requestHeaders)
                     path.startsWith("/art/") -> serveArt(path.removePrefix("/art/").toLongOrNull())
+                    path == "/proxy" -> serveProxy(uri.getQueryParameter("u"), request.requestHeaders)
                     else -> loader.shouldInterceptRequest(uri)
                 }
             }
@@ -178,8 +181,17 @@ class MainActivity : AppCompatActivity() {
         fun getAudioList(): String = MusicLibrary.listJson(this@MainActivity)
 
         @JavascriptInterface
-        fun setNowPlaying(playing: Boolean, title: String, artist: String, mediaId: Double, positionMs: Double, durationMs: Double) {
-            PlaybackService.update(applicationContext, playing, title, artist, mediaId.toLong(), positionMs.toLong(), durationMs.toLong())
+        fun setNowPlaying(playing: Boolean, title: String, artist: String, mediaId: Double, positionMs: Double, durationMs: Double, coverUrl: String) {
+            PlaybackService.update(applicationContext, playing, title, artist, mediaId.toLong(), positionMs.toLong(), durationMs.toLong(), coverUrl)
+        }
+
+        /** Opens a web page (for example a YouTube search) in the phone's browser or app. */
+        @JavascriptInterface
+        fun openExternal(url: String) {
+            if (!url.startsWith("https://")) return
+            runOnUiThread {
+                try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) } catch (e: Exception) { }
+            }
         }
     }
 
@@ -196,6 +208,36 @@ class MainActivity : AppCompatActivity() {
             mapOf("Cache-Control" to "max-age=86400"),
             ByteArrayInputStream(bytes)
         )
+    }
+
+    /**
+     * Lets the page reach the internet (music catalogues, previews, cover pictures)
+     * through the app, so the web page needs no special browser permissions.
+     */
+    private fun serveProxy(target: String?, headers: Map<String, String>): WebResourceResponse {
+        if (target == null || !target.startsWith("https://")) return status(400, "Bad Request")
+        try {
+            val conn = URL(target).openConnection() as HttpURLConnection
+            conn.connectTimeout = 15000
+            conn.readTimeout = 30000
+            conn.instanceFollowRedirects = true
+            conn.setRequestProperty("User-Agent", "Wave/1.0 (Android)")
+            conn.setRequestProperty("Accept-Encoding", "identity")
+            (headers["Range"] ?: headers["range"])?.let { conn.setRequestProperty("Range", it) }
+            val code = conn.responseCode
+            if (code in 300..399 || code < 200) return status(502, "Bad Gateway")
+            val stream = (if (code >= 400) conn.errorStream else conn.inputStream) ?: ByteArrayInputStream(ByteArray(0))
+            val out = mutableMapOf<String, String>()
+            for (k in listOf("Content-Length", "Content-Range", "Accept-Ranges")) {
+                conn.getHeaderField(k)?.let { out[k] = it }
+            }
+            val type = conn.contentType?.substringBefore(';')?.trim() ?: "application/octet-stream"
+            out["Cache-Control"] = if (type.startsWith("image/")) "max-age=86400" else "no-store"
+            val reason = conn.responseMessage?.takeIf { it.isNotBlank() } ?: "OK"
+            return WebResourceResponse(type, null, code, reason, out, stream)
+        } catch (e: Exception) {
+            return status(502, "Bad Gateway")
+        }
     }
 
     /** Streams a song, with HTTP Range support so seeking works. */

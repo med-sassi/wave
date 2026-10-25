@@ -21,6 +21,8 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import java.net.HttpURLConnection
+import java.net.URL
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 
@@ -46,21 +48,31 @@ class PlaybackService : Service() {
         private var posMs = 0L
         private var durMs = 0L
         private var art: Bitmap? = null
-        private var artId = -1L
+        private var artKey = ""
         private var stopTask: Runnable? = null
 
-        fun update(ctx: Context, isPlaying: Boolean, newTitle: String, newArtist: String, id: Long, pos: Long, dur: Long) {
+        private fun downloadBitmap(url: String): Bitmap? {
+            val conn = URL(url).openConnection() as HttpURLConnection
+            conn.connectTimeout = 8000
+            conn.readTimeout = 8000
+            return try { conn.inputStream.use { BitmapFactory.decodeStream(it) } } finally { conn.disconnect() }
+        }
+
+        fun update(ctx: Context, isPlaying: Boolean, newTitle: String, newArtist: String, id: Long, pos: Long, dur: Long, coverUrl: String) {
             val app = ctx.applicationContext
             var bmp: Bitmap? = null
-            val reload = id != artId
+            val key = if (id > 0) "m$id" else coverUrl
+            val reload = key != artKey
             if (reload) {
                 bmp = try {
-                    if (id > 0) ArtCache.get(app, id)?.let { BitmapFactory.decodeByteArray(it, 0, it.size) } else null
+                    if (id > 0) ArtCache.get(app, id)?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
+                    else if (coverUrl.startsWith("https://")) downloadBitmap(coverUrl)
+                    else null
                 } catch (e: Exception) { null }
             }
             handler.post {
                 title = newTitle; artist = newArtist; playing = isPlaying; posMs = pos; durMs = dur
-                if (reload) { art = bmp; artId = id }
+                if (reload) { art = bmp; artKey = key }
                 stopTask?.let { handler.removeCallbacks(it) }
                 stopTask = null
                 val svc = instance
