@@ -1,6 +1,21 @@
 WAVE for Android  -  your phone's music, found automatically  (version 2)
 ==============================================================
 
+NEW IN VERSION 6
+- FIX: songs no longer stop right after they start (removed a conflicting audio-focus request
+  and added a safety net that restarts a song if it is paused by accident in its first seconds).
+- New home: avatar + your name (set it in Appearance), round search / heart buttons, filter chips,
+  big curated cards (Wave Mix, New in your library...), Top playlists with play buttons.
+- Floating pill navigation with a glowing circle on the active tab.
+- Playing a song: player bar with the cover fading in and a white rounded pause button;
+  playlist page in album style (cover + title, wide Play / Shuffle buttons, equalizer on the playing row).
+- Full-screen player: glowing slider, glass buttons that press in, pulsing play button,
+  cover that moves with the beat, and an "add to playlist" button.
+- Add songs sheet: filter by length (under 2 min, 2-4 min, over 4 min) and by artist,
+  then "Add all" for exactly what you see. Creating a playlist asks if you want to choose songs now.
+- Artist, Wave Mix and Liked pages have a "save as playlist" button.
+- Buttons ripple, rotate and bounce; stronger glass with bright edges.
+
 NEW IN VERSION 5 - SMOOTHER AND GLASSIER
 - Stronger glass theme: frosted bars, glowing colour blobs that slowly drift behind everything.
 - Swipe down on the full-screen player and it tucks into the bottom bar. Swipe up on the bar to open it.

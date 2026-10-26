@@ -11,9 +11,6 @@ import android.content.pm.ServiceInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Icon
-import android.media.AudioAttributes
-import android.media.AudioFocusRequest
-import android.media.AudioManager
 import android.media.MediaMetadata
 import android.media.session.MediaSession
 import android.media.session.PlaybackState
@@ -91,17 +88,6 @@ class PlaybackService : Service() {
     }
 
     private lateinit var session: MediaSession
-    private var focusRequest: AudioFocusRequest? = null
-    private var resumeOnGain = false
-
-    private val focusListener = AudioManager.OnAudioFocusChangeListener { change ->
-        when (change) {
-            AudioManager.AUDIOFOCUS_LOSS -> { resumeOnGain = false; MainActivity.control("pause") }
-            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> { if (playing) { resumeOnGain = true; MainActivity.control("pause") } }
-            AudioManager.AUDIOFOCUS_GAIN -> { if (resumeOnGain) { resumeOnGain = false; MainActivity.control("play") } }
-        }
-    }
-
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
@@ -126,7 +112,6 @@ class PlaybackService : Service() {
             ACTION_TOGGLE -> MainActivity.control("toggle")
             ACTION_NEXT -> MainActivity.control("next")
         }
-        if (playing) requestFocus()
         updateSession()
         try {
             ServiceCompat.startForeground(
@@ -140,25 +125,8 @@ class PlaybackService : Service() {
     }
 
     fun refresh() {
-        if (playing) requestFocus()
         updateSession()
         (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(NOTIF_ID, buildNotification())
-    }
-
-    private fun requestFocus() {
-        if (focusRequest != null) return
-        val am = getSystemService(AUDIO_SERVICE) as AudioManager
-        val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build()
-            )
-            .setOnAudioFocusChangeListener(focusListener, handler)
-            .build()
-        focusRequest = req
-        am.requestAudioFocus(req)
     }
 
     private fun updateSession() {
@@ -221,8 +189,6 @@ class PlaybackService : Service() {
     override fun onDestroy() {
         instance = null
         try {
-            focusRequest?.let { (getSystemService(AUDIO_SERVICE) as AudioManager).abandonAudioFocusRequest(it) }
-            focusRequest = null
             session.isActive = false
             session.release()
         } catch (e: Exception) { }
