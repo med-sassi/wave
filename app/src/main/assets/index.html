@@ -866,6 +866,74 @@ body.glass .tabbar{background:var(--tab-bg),rgba(10,10,14,.78)}
 body.glass .dock{background:var(--dock-bg),rgba(14,14,20,.6)}
 @media(max-width:560px){dialog,dialog.wide{width:100%!important;max-width:100%!important}}
 
+/* ================================================================
+   v7: fixed background + liquid glass
+   ================================================================ */
+:root{--bg:#09090d}
+html{background:#09090d}
+body{background:radial-gradient(1100px 650px at 18% -12%,rgba(86,104,255,.1),transparent 60%),radial-gradient(900px 600px at 100% 108%,rgba(40,200,150,.06),transparent 60%),#09090d;background-attachment:fixed}
+.ambient,.blob,.np-glow{display:none!important}
+.main::before{display:none!important}
+.np{background:radial-gradient(1000px 600px at 18% -12%,rgba(86,104,255,.1),transparent 60%),#09090d}
+
+body.glass{
+  --lg-fill:linear-gradient(145deg,rgba(255,255,255,.2) 0%,rgba(255,255,255,.07) 42%,rgba(255,255,255,.13) 100%);
+  --lg-fill-strong:linear-gradient(145deg,rgba(255,255,255,.3) 0%,rgba(255,255,255,.1) 45%,rgba(255,255,255,.19) 100%);
+  --lg-rim:inset 0 1px 0 rgba(255,255,255,.62),inset 0 -1px 0 rgba(255,255,255,.16),inset 1px 0 0 rgba(255,255,255,.18),inset -1px 0 0 rgba(255,255,255,.1),inset 0 0 24px rgba(255,255,255,.07);
+  --lg-drop:0 10px 30px rgba(0,0,0,.38);
+}
+/* buttons, chips, cards, playlist rows */
+body.glass :is(.btn,.chip,.round-btn,.ctl-btn,.btn-wide.ghost,.searchbar,.tile,.card,.pl-row,.empty,.sort,.theme-card,.queue,.pick-row,.num-btn){background:var(--lg-fill);box-shadow:var(--lg-rim),var(--lg-drop);border:0;backdrop-filter:none}
+body.glass :is(.btn,.chip,.round-btn,.ctl-btn,.btn-wide.ghost,.tile,.card,.pl-row):hover{background:var(--lg-fill-strong)}
+body.glass .pick-row{box-shadow:var(--lg-rim);margin-bottom:6px}
+body.glass .chips:not(.tabs) .chip{background:var(--lg-fill)}
+body.glass .ctl-btn[data-ctl=shuffle],body.glass .ctl-btn[data-ctl=repeat]{background:transparent;box-shadow:none}
+/* accent buttons: tinted glass */
+body.glass :is(.btn.primary,.chip.on,.btn-wide.play,.fab,.tab[aria-current=page],.edit-btn.on){background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 76%,#fff) 0%,var(--acc) 55%,color-mix(in srgb,var(--acc) 84%,#000) 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.78),inset 0 -2px 6px rgba(0,0,0,.22),0 10px 26px color-mix(in srgb,var(--acc) 34%,transparent);color:var(--on-acc)}
+body.glass .chips:not(.tabs) .chip.on{background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 40%,rgba(255,255,255,.2)),color-mix(in srgb,var(--acc) 24%,rgba(255,255,255,.06)));box-shadow:var(--lg-rim),0 8px 22px color-mix(in srgb,var(--acc) 22%,transparent);color:var(--text)}
+/* bars: clear glass over the content */
+body.glass .dock,body.glass .tabbar{background:var(--lg-fill-strong),rgba(18,20,28,.34);backdrop-filter:blur(20px) saturate(2) brightness(1.12);-webkit-backdrop-filter:blur(20px) saturate(2) brightness(1.12);box-shadow:var(--lg-rim),0 22px 60px rgba(0,0,0,.5);border:0}
+body.glass .dock::after,body.glass .tabbar::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:0;-webkit-mask:none;mask:none;background:radial-gradient(120% 90% at 10% -30%,rgba(255,255,255,.4),rgba(255,255,255,0) 52%),radial-gradient(90% 80% at 100% 130%,rgba(255,255,255,.16),rgba(255,255,255,0) 55%);pointer-events:none;z-index:3}
+body.glass :is(.card,.tile,dialog,.menu,.queue,.pl-row,.col-back,.round-btn)::after{content:none}
+body.glass .sidebar{background:var(--lg-fill),rgba(14,16,22,.4);backdrop-filter:blur(24px) saturate(1.8);border-right:0;box-shadow:inset -1px 0 0 rgba(255,255,255,.14)}
+body.glass dialog,body.glass .menu{background:var(--lg-fill-strong),rgba(20,22,30,.6);backdrop-filter:blur(30px) saturate(2) brightness(1.1);box-shadow:var(--lg-rim),0 30px 90px rgba(0,0,0,.6);border:0}
+body.glass .cs-bg{background:var(--lg-fill-strong),rgba(18,20,28,.42);backdrop-filter:blur(20px) saturate(2);box-shadow:inset 0 -1px 0 rgba(255,255,255,.22);border-bottom:0}
+body.glass .col-back{background:var(--lg-fill-strong);box-shadow:var(--lg-rim),var(--lg-drop);backdrop-filter:blur(12px);border:0}
+body.glass .toast{background:var(--lg-fill-strong),rgba(20,22,30,.6);box-shadow:var(--lg-rim),0 14px 40px rgba(0,0,0,.5);border:0}
+/* songs: every row is a glass capsule */
+body.glass .track{background:var(--lg-fill);box-shadow:var(--lg-rim);border-radius:22px;margin-bottom:8px}
+body.glass .track:hover{background:var(--lg-fill-strong)}
+body.glass .track.is-current{background:var(--lg-fill-strong);box-shadow:inset 0 1px 0 rgba(255,255,255,.75),inset 0 0 0 1px color-mix(in srgb,var(--acc) 60%,transparent),inset 0 0 26px color-mix(in srgb,var(--acc) 16%,transparent)}
+body.glass .t-head{border-bottom:0}
+
+/* playlist rows keep the cover picture next to the number */
+@media(max-width:760px){
+  .tracks.plain .t-main .art{display:grid;width:50px;border-radius:14px}
+  .tracks.plain .track{padding-top:7px;padding-bottom:7px}
+}
+
+/* edit mode (reorder) */
+.t-idx .num-btn{display:none}
+.num-btn{width:38px;height:38px;border-radius:13px;font-weight:800;font-size:14px;place-items:center;color:var(--text);background:rgba(255,255,255,.13);box-shadow:inset 0 1px 0 rgba(255,255,255,.4);transition:transform .22s cubic-bezier(.3,1.5,.5,1)}
+.num-btn:active{transform:scale(.88)}
+.tracks.editing .t-idx .num,.tracks.editing .t-idx .eq,.tracks.editing .t-idx .t-play{display:none!important}
+.tracks.editing .t-idx .num-btn{display:grid}
+.tracks.editing{--cols:46px minmax(0,2fr) minmax(0,1.2fr) 56px 40px 40px}
+@media(max-width:760px){.tracks.editing{--cols:46px minmax(0,1fr) 40px 40px}}
+.mv{width:38px;height:38px}
+.edit-hint{margin:-6px 0 14px;color:var(--muted);font-size:13px}
+.edit-btn.on{background:var(--acc);color:var(--on-acc)}
+@keyframes moved{0%{box-shadow:inset 0 0 0 2px var(--acc),0 0 28px color-mix(in srgb,var(--acc) 60%,transparent)}100%{box-shadow:inset 0 0 0 0 transparent,0 0 0 transparent}}
+.track.moved{animation:moved 1.2s ease-out}
+.stepper{display:flex;align-items:center;gap:12px;margin:2px 0 16px}
+.stepper input{width:96px;height:52px;text-align:center;font-size:24px;font-weight:800;border-radius:16px;background:var(--bg);border:1px solid var(--line);color:var(--text);outline:none;-moz-appearance:textfield}
+.stepper input:focus{border-color:var(--acc)}
+.stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stepper .round-btn{width:48px;height:48px;font-size:24px;font-weight:600}
+#moveDlg .chips{margin:0}
+body.glass .tabbar{background:var(--lg-fill-strong),rgba(16,18,26,.56)}
+body.glass .dock{background:var(--lg-fill-strong),rgba(16,18,26,.5)}
+
 </style>
 </head>
 <body>
@@ -1029,6 +1097,18 @@ body.glass .dock{background:var(--dock-bg),rgba(14,14,20,.6)}
     </div>
     <div class="start-with" id="startWith"><p class="fl-label">Then</p><div class="chips" role="radiogroup" aria-label="Start with"><button type="button" class="chip on" data-start="pick" role="radio" aria-checked="true">Choose songs</button><button type="button" class="chip" data-start="empty" role="radio" aria-checked="false">Leave it empty</button></div></div>
     <div class="dlg-actions"><button class="btn" type="button" id="nameCancel">Cancel</button><button class="btn primary" type="submit" id="nameOk">Create</button></div>
+  </form>
+</dialog>
+
+<dialog id="moveDlg">
+  <form class="dlg" method="dialog" id="moveForm">
+    <h3>Move song</h3>
+    <p id="moveName" class="trunc"></p>
+    <label class="fl-label" for="movePos">New position</label>
+    <div class="stepper"><button type="button" class="round-btn sm" id="moveMinus" aria-label="One less">−</button><input id="movePos" type="number" inputmode="numeric" min="1" value="1"><button type="button" class="round-btn sm" id="movePlus" aria-label="One more">+</button></div>
+    <div class="chips" role="radiogroup" aria-label="How to move" id="moveMode"><button type="button" class="chip on" data-mode="swap" role="radio" aria-checked="true">Swap places</button><button type="button" class="chip" data-mode="insert" role="radio" aria-checked="false">Move here</button></div>
+    <p class="note" id="moveHelp"></p>
+    <div class="dlg-actions"><button class="btn" type="button" id="moveCancel">Cancel</button><button class="btn primary" type="submit">Move</button></div>
   </form>
 </dialog>
 
@@ -1318,6 +1398,23 @@ function nativeScan() {
     if (curId && !tmap.has(curId) && tracks.length) { loadToken++; wantPlay = false; audio.pause(); audio.removeAttribute('src'); loadedId = null; curId = null; playing = false; qi = -1; queue = []; base = []; }
   } catch (e) { tracks = []; reindex(); }
 }
+/* Songs are loaded fully into memory first, so jumping around in a song never
+   depends on many small file requests (that made playback stall after scrubbing). */
+async function blobOrUrl(url, limit) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const len = Number(res.headers.get('content-length')) || 0;
+    if (!len || len > limit) { try { if (res.body) res.body.cancel(); } catch (e) {} return url; }
+    return URL.createObjectURL(await res.blob());
+  } catch (e) { return url; }
+}
+async function nativeSource(t) {
+  if (!t.remote) return blobOrUrl('/media/' + t.mid, 70e6);
+  const u = await resolveRemote(t);
+  return blobOrUrl(API(u), t.remote === 'deezer' ? 10e6 : 40e6);
+}
+
 /* ---------- online music (Android app): Deezer previews + Audius full songs ---------- */
 const API = u => '/proxy?u=' + encodeURIComponent(u);
 async function getJSON(u) { const r = await fetch(API(u)); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
@@ -1452,11 +1549,6 @@ function setAccent(a) {
   const f = ACCENTS[theme.accent];
   uiAcc = f ? { h: f[0], s: f[1], l: f[2] } : { h: a.h, s: a.s, l: a.l };
   root.style.setProperty('--h', uiAcc.h); root.style.setProperty('--s', uiAcc.s); root.style.setProperty('--l', uiAcc.l);
-  const bg = `radial-gradient(900px 560px at 12% -8%,hsla(${a.h},${Math.max(a.s, 55)}%,45%,.5),transparent 70%),radial-gradient(760px 520px at 100% 105%,hsla(${(a.h + 42) % 360},${Math.max(a.s - 8, 40)}%,38%,.34),transparent 70%)`;
-  const next = $(ambFlip ? '#amb1' : '#amb2'), old = $(ambFlip ? '#amb2' : '#amb1');
-  next.style.background = bg; next.classList.add('on'); old.classList.remove('on');
-  ambFlip = !ambFlip;
-  $('#npGlow').style.background = bg;
 }
 
 /* ---------- artwork ---------- */
@@ -1552,24 +1644,24 @@ async function getBlob(id) {
   if (!dbOk) return null;
   try { return (await idb.get('files', id)) || null; } catch (e) { return null; }
 }
-async function load(id, { play = true, at = 0 } = {}) {
+async function load(id, { play = true, at = 0, recover = false } = {}) {
   const t = T(id); if (!t) return;
   const token = ++loadToken;
   curId = id;
   wantPlay = !!play; playStartAt = Date.now(); resumeTries = 0;
   if (queue[qi] !== id) { qi = queue.indexOf(id); if (qi < 0) { queue = [id]; base = [id]; qi = 0; } }
-  if (play) { recent = [id, ...recent.filter(x => x !== id)].slice(0, 40); plays[id] = (plays[id] || 0) + 1; }
+  if (play && !recover) { recent = [id, ...recent.filter(x => x !== id)].slice(0, 40); plays[id] = (plays[id] || 0) + 1; }
   updateMeta();
   if (play && (view.name === 'home' || view.name === 'recent')) renderView();
   if (NATIVE) {
-    if (t.remote) {
-      audio.pause();
-      let url;
-      try { url = await resolveRemote(t); }
-      catch (e) { if (token === loadToken) { playing = false; syncPlayState(); toast('Couldn’t load this song. Check your internet connection.', 4200); } return; }
-      if (token !== loadToken) return;
-      audio.src = API(url);
-    } else audio.src = '/media/' + t.mid;
+    loadedId = null; audio.pause();            // stop the old song while the new one loads
+    let src;
+    try { src = await nativeSource(t); }
+    catch (e) { if (token === loadToken) { playing = false; syncPlayState(); toast('Couldn’t load this song. Check your connection and try again.', 4200); } return; }
+    if (token !== loadToken) { if (src.startsWith('blob:')) URL.revokeObjectURL(src); return; }
+    if (curUrl) URL.revokeObjectURL(curUrl);
+    curUrl = src.startsWith('blob:') ? src : null;
+    audio.src = src;
   }
   else {
     const blob = await getBlob(id);
@@ -1920,20 +2012,20 @@ function popHearts(id) {
 /* ---------- screens ---------- */
 const greeting = () => { const h = new Date().getHours(); return h >= 5 && h < 12 ? 'Good morning' : h >= 12 && h < 18 ? 'Good afternoon' : 'Good evening'; };
 const totalDur = ids => ids.reduce((s, id) => s + (T(id)?.duration || 0), 0);
-function rowHTML(t, n, plain) {
+function rowHTML(t, n, plain, edit) {
   const l = likedSet.has(t.id), nm = esc(t.name), num = plain ? String(n).padStart(2, '0') : n;
   return `<div class="track${t.id === curId ? ' is-current' : ''}" data-id="${t.id}" tabindex="0" style="--n:${Math.min(n, 14)}">
-    <div class="t-idx"><span class="num">${num}</span><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><button class="t-play" data-act="row-play" tabindex="-1" aria-label="Play ${nm}">${ico('play', 'fillicon i-play')}${ico('pause', 'fillicon i-pause')}</button></div>
+    <div class="t-idx">${edit ? `<button class="num-btn" data-act="mv-to" aria-label="Move ${nm} to another place">${num}</button>` : ''}<span class="num">${num}</span><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><button class="t-play" data-act="row-play" tabindex="-1" aria-label="Play ${nm}">${ico('play', 'fillicon i-play')}${ico('pause', 'fillicon i-pause')}</button></div>
     <div class="t-main">${art(t)}<div class="t-text"><div class="t-title" dir="auto">${nm}${t.remote === 'deezer' ? '<span class="tag">30s</span>' : ''}</div><div class="t-artist" dir="auto">${esc(t.artist)}${t.duration ? `<span class="t-inl"> · ${time(t.duration)}</span>` : ''}</div></div></div>
     <div class="t-album" dir="auto">${esc(t.album)}</div>
     <div class="t-time">${t.duration ? time(t.duration) : ''}</div>
-    <button class="icon-btn like${l ? ' liked' : ''}" data-act="like" aria-pressed="${l}" aria-label="${l ? 'Remove from Liked songs' : 'Save to Liked songs'}">${ico('heart')}</button>
-    <button class="icon-btn more" data-act="more" aria-haspopup="menu" aria-label="More options for ${nm}">${ico('more')}</button>
+    ${edit ? `<button class="icon-btn mv" data-act="mv-up" aria-label="Move up">${ico('up')}</button><button class="icon-btn mv" data-act="mv-down" aria-label="Move down">${ico('down')}</button>` : `<button class="icon-btn like${l ? ' liked' : ''}" data-act="like" aria-pressed="${l}" aria-label="${l ? 'Remove from Liked songs' : 'Save to Liked songs'}">${ico('heart')}</button>
+    <button class="icon-btn more" data-act="more" aria-haspopup="menu" aria-label="More options for ${nm}">${ico('more')}</button>`}
   </div>`;
 }
-function rows(ids, key, limit, plain) {
+function rows(ids, key, limit, plain, edit) {
   const use = limit ? ids.slice(0, limit) : ids;
-  return `<div class="tracks${plain ? ' plain' : ''}" data-list="${key}"><div class="t-head" aria-hidden="true"><span>#</span><span>Title</span><span>Album</span><span>Time</span><span></span><span></span></div>${use.map((id, i) => rowHTML(T(id), i + 1, plain)).join('')}</div>`;
+  return `<div class="tracks${plain ? ' plain' : ''}${edit ? ' editing' : ''}" data-list="${key}"><div class="t-head" aria-hidden="true"><span>#</span><span>Title</span><span>Album</span><span>Time</span><span></span><span></span></div>${use.map((id, i) => rowHTML(T(id), i + 1, plain, edit)).join('')}</div>`;
 }
 const colCard = (kind, id, name, sub, artHtml, round) => `<button class="card${round ? ' round' : ''}" data-act="open-col" data-kind="${kind}" data-id="${esc(id || '')}">${artHtml}<div class="c-title trunc" dir="auto">${esc(name)}</div><div class="c-sub trunc">${esc(sub)}</div></button>`;
 const trackCard = (id, list) => { const t = T(id); return `<button class="card" data-act="play-card" data-list="${list}" data-id="${id}"><span class="aw">${art(t)}<span class="card-fab">${ico('play', 'fillicon')}</span></span><div class="c-title trunc" dir="auto">${esc(t.name)}</div><div class="c-sub trunc" dir="auto">${esc(t.artist)}</div></button>`; };
@@ -2082,14 +2174,13 @@ function collectionView(kind, id) {
   hero = hero || `hsl(${hue} 50% 38%)`; heroColor = hero; colBar = { name, key };
   const total = totalDur(ids);
   let h = `<header class="col-hero" style="--hero:${hero}">`;
-  h += canEdit
-    ? `<button class="col-cover" data-act="pick-cover" data-id="${p.id}" aria-label="Change playlist picture">${artHtml}<span class="cover-badge">${ico('camera')}</span></button>`
-    : `<div class="col-cover${round ? ' round' : ''}">${artHtml}</div>`;
-  const icons = (canEdit ? `<button class="round-btn sm" data-act="add-songs" data-id="${p.id}" aria-label="Add songs">${ico('playlist-add')}</button><button class="round-btn sm" data-act="pl-menu" data-id="${p.id}" aria-haspopup="menu" aria-label="Playlist options">${ico('more')}</button>`
+  h += `<div class="col-cover${round ? ' round' : ''}">${artHtml}</div>`;
+  const icons = (canEdit ? `<button class="btn small edit-btn${plEdit ? ' on' : ''}" data-act="edit-order" aria-pressed="${plEdit}">${ico(plEdit ? 'check' : 'edit')}${plEdit ? 'Done' : 'Edit'}</button><button class="round-btn sm" data-act="add-songs" data-id="${p.id}" aria-label="Add songs">${ico('playlist-add')}</button><button class="round-btn sm" data-act="pl-menu" data-id="${p.id}" aria-haspopup="menu" aria-label="Playlist options">${ico('more')}</button>`
     : (kind === 'artist' || kind === 'mix' || kind === 'liked') && ids.length ? `<button class="round-btn sm" data-act="save-list" data-list="${esc(key)}" data-name="${esc(name)}" aria-label="Save as playlist" title="Save as playlist">${ico('playlist-add')}</button>` : '');
   h += `<div class="col-meta"><p class="kind">${label} · ${plural(ids.length, 'song')}${total ? ' · ' + longTime(total) : ''}</p><h1 dir="auto">${esc(name)}</h1>${icons ? `<div class="col-icons">${icons}</div>` : ''}</div></header>`;
   h += `<div class="col-bar"><button class="btn-wide play" data-act="play-list" data-list="${esc(key)}">${ico('play', 'fillicon')}Play</button><button class="btn-wide ghost" data-act="shuffle-list" data-list="${esc(key)}">${ico('shuffle')}Shuffle</button></div>`;
-  if (ids.length) h += rows(ids, key, 0, true);
+  if (canEdit && plEdit && ids.length) h += `<p class="edit-hint">Tap a number to move a song to another place, or use the arrows. Press Done when you’re finished.</p>`;
+  if (ids.length) h += rows(ids, key, 0, true, canEdit && plEdit);
   else h += `<div class="empty"><h3>${empty[0]}</h3><p>${empty[1]}</p>${canEdit ? `<button class="btn primary" data-act="add-songs" data-id="${p.id}">${ico('plus')}Add songs</button>` : ''}</div>`;
   return h;
 }
@@ -2161,7 +2252,9 @@ function setNavState() {
 function render() { renderSidebar(); renderView(); setNavState(); }
 function updateSearchUI() { $('#searchbar').classList.toggle('has-text', !!$('#search').value); }
 const navStack = [];
+let plEdit = false;
 function go(name, id = null, opts = {}) {
+  plEdit = false;
   if (query && name !== 'search') { query = ''; $('#search').value = ''; updateSearchUI(); }
   if (!opts.back && (view.name !== name || view.id !== id)) { navStack.push({ name: view.name, id: view.id, y: window.scrollY }); if (navStack.length > 25) navStack.shift(); }
   view = { name, id }; prevView = null;
@@ -2236,10 +2329,8 @@ function playlistPicker(id, anchor) {
 function playlistMenu(plId, anchor) {
   const p = playlists.find(x => x.id === plId); if (!p) return;
   const items = [
-    { label: 'Edit name and picture', icon: 'edit', run: () => editPlaylist(p) },
-    { label: 'Change picture', icon: 'camera', run: () => { coverMode = 'pl:' + p.id; $('#coverInput').click(); } }
+    { label: 'Edit name and picture', icon: 'edit', run: () => editPlaylist(p) }
   ];
-  if (p.cover) items.push({ label: 'Remove picture', icon: 'close', run: () => { p.cover = null; p.acc = null; save(true); render(); toast('Picture removed'); } });
   items.push({ label: 'Delete playlist', icon: 'trash', danger: true, run: async () => { if (await confirmDialog({ title: 'Delete this playlist?', text: `“${p.name}” will be deleted. Your songs stay in the library.`, ok: 'Delete' })) { playlists = playlists.filter(x => x.id !== p.id); save(true); go('library'); toast('Playlist deleted'); } } });
   openMenu(anchor, items);
 }
@@ -2399,6 +2490,17 @@ function act(a, el) {
     case 'settings': renderSettings(); $('#settingsDlg').showModal(); break;
     case 'set-theme': theme.mode = el.dataset.v; applyTheme(); renderSettings(); break;
     case 'set-accent': theme.accent = el.dataset.v; applyTheme(); renderSettings(); break;
+    case 'edit-order': plEdit = !plEdit; renderView(); break;
+    case 'mv-up': case 'mv-down': if (row) { const id = row.dataset.id, dir = a === 'mv-up' ? -1 : 1; reorderPlaylist(arr => { const i = arr.indexOf(id), j = i + dir; if (i >= 0 && j >= 0 && j < arr.length) [arr[i], arr[j]] = [arr[j], arr[i]]; }, id); } break;
+    case 'mv-to': if (row) {
+      const id = row.dataset.id, p = playlists.find(x => x.id === view.id); if (!p) break;
+      const shown = p.ids.filter(x => tmap.has(x)), from = shown.indexOf(id) + 1;
+      askMove({ name: T(id).name, pos: from, max: shown.length }).then(r => {
+        if (!r || r.pos === from) return;
+        reorderPlaylist(arr => { const i = arr.indexOf(id), j = r.pos - 1; if (r.mode === 'swap') [arr[i], arr[j]] = [arr[j], arr[i]]; else { arr.splice(i, 1); arr.splice(j, 0, id); } }, id);
+        toast(r.mode === 'swap' ? `Swapped places ${from} and ${r.pos}` : `Moved to place ${r.pos}`);
+      });
+    } break;
     case 'sort': sortMode = el.dataset.v; save(); renderView(); break;
     case 'tab': libTab = el.dataset.v; if (el.dataset.go) go(el.dataset.go); else renderView(true); break;
     case 'pick-cover': coverMode = 'pl:' + el.dataset.id; $('#coverInput').click(); break;
@@ -2433,7 +2535,7 @@ document.addEventListener('click', e => {
   const c = t.closest('[data-ctl]'); if (c) { ctl(c.dataset.ctl); return; }
   const n = t.closest('[data-nav]'); if (n) { navTo(n.dataset.nav, n.dataset.id); return; }
   const a = t.closest('[data-act]'); if (a) { act(a.dataset.act, a); return; }
-  const row = t.closest('.track'); if (row && !t.closest('button')) rowPlay(row);
+  const row = t.closest('.track'); if (row && !t.closest('button') && !row.closest('.editing')) rowPlay(row);
 });
 document.addEventListener('contextmenu', e => { const row = e.target.closest('.track'); if (row && matchMedia('(hover:hover)').matches) { e.preventDefault(); trackMenu(row.dataset.id, row.querySelector('.more') || row, row.closest('[data-list]')?.dataset.list); } });
 
@@ -2446,7 +2548,7 @@ document.addEventListener('input', e => {
     seeking = true; el.classList.add('dragging');
     const dur = curDur(), pos = (el.value / 1000) * dur;
     paintSeek(el.value / 1000, pos, dur);
-    if (loadedId === curId) { audio.currentTime = pos; pendingSeek = null; } else pendingSeek = pos;
+    pendingSeek = pos;   // applied once, when you let go
   } else if (el.classList.contains('vol')) setVolume(+el.value);
   else if (el.id === 'dsInput') {
     clearTimeout(dTimer);
@@ -2481,7 +2583,18 @@ audio.addEventListener('loadedmetadata', () => {
   if (t && loadedId === curId && Number.isFinite(audio.duration) && Math.abs((t.duration || 0) - audio.duration) > 1) { t.duration = audio.duration; save(); }
   syncTime(); updatePosition(); nativeNotify(true);
 });
-audio.addEventListener('seeked', () => { syncTime(); updatePosition(); nativeNotify(true); });
+audio.addEventListener('seeked', () => {
+  syncTime(); updatePosition(); nativeNotify(true); lastProgress = Date.now();
+  if (wantPlay && audio.paused && !audio.ended && loadedId === curId && !seeking) audio.play().catch(() => {});
+});
+let lastProgress = Date.now();
+audio.addEventListener('playing', () => { lastProgress = Date.now(); });
+audio.addEventListener('timeupdate', () => { lastProgress = Date.now(); });
+/* if the sound freezes for a few seconds, reload the song from the same spot */
+setInterval(() => {
+  if (!playing || audio.paused || seeking || loadedId !== curId) return;
+  if (Date.now() - lastProgress > 6000) { lastProgress = Date.now(); load(curId, { play: true, at: audio.currentTime, recover: true }); }
+}, 2000);
 audio.addEventListener('error', () => {
   if (!audio.getAttribute('src') || loadedId !== curId) return;
   playing = false; syncPlayState(); errorStreak++;
@@ -2532,6 +2645,43 @@ document.addEventListener('keydown', e => {
     case 'm': case 'M': toggleMute(); break;
   }
 });
+
+/* ---------- edit mode: change the order of songs in a playlist ---------- */
+function reorderPlaylist(fn, movedId) {
+  const p = playlists.find(x => x.id === view.id); if (!p) return;
+  const shown = p.ids.filter(id => tmap.has(id)), hidden = p.ids.filter(id => !tmap.has(id));
+  const before = new Map($$('.tracks .track').map(r => [r.dataset.id, r.getBoundingClientRect().top]));
+  fn(shown);
+  p.ids = shown.concat(hidden); save(true);
+  renderView();
+  $$('.tracks .track').forEach(r => {
+    const old = before.get(r.dataset.id), now = r.getBoundingClientRect().top;
+    if (old != null && Math.abs(old - now) > 1) {
+      r.style.transition = 'none'; r.style.transform = `translateY(${old - now}px)`;
+      requestAnimationFrame(() => requestAnimationFrame(() => { r.style.transition = 'transform .45s cubic-bezier(.2,.8,.2,1)'; r.style.transform = ''; }));
+    }
+    if (r.dataset.id === movedId) { r.classList.add('moved'); setTimeout(() => r.classList.remove('moved'), 1200); }
+  });
+}
+function askMove({ name, pos, max }) {
+  return new Promise(res => {
+    const d = $('#moveDlg'), inp = $('#movePos'); let result = null, mode = 'swap';
+    $('#moveName').textContent = name; inp.max = max; inp.value = pos;
+    const clampPos = () => clamp(parseInt(inp.value, 10) || pos, 1, max);
+    const help = () => {
+      const j = clampPos();
+      $('#moveHelp').textContent = j === pos ? 'This song is already there.' : mode === 'swap' ? `Song ${j} goes to place ${pos}, and this song takes place ${j}.` : `This song goes to place ${j}. The songs in between shift by one.`;
+    };
+    $$('#moveMode .chip').forEach(c => { const on = c.dataset.mode === 'swap'; c.classList.toggle('on', on); c.setAttribute('aria-checked', on); c.onclick = () => { mode = c.dataset.mode; $$('#moveMode .chip').forEach(x => { x.classList.toggle('on', x === c); x.setAttribute('aria-checked', x === c); }); help(); }; });
+    $('#moveMinus').onclick = () => { inp.value = clamp(clampPos() - 1, 1, max); help(); };
+    $('#movePlus').onclick = () => { inp.value = clamp(clampPos() + 1, 1, max); help(); };
+    inp.oninput = help; help();
+    $('#moveForm').onsubmit = e => { e.preventDefault(); result = { pos: clampPos(), mode }; d.close(); };
+    $('#moveCancel').onclick = () => d.close();
+    d.onclose = () => res(result);
+    d.showModal(); inp.focus(); inp.select();
+  });
+}
 
 /* soft ripple when you press a button */
 document.addEventListener('pointerdown', e => {

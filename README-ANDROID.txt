@@ -1,6 +1,15 @@
 WAVE for Android  -  your phone's music, found automatically  (version 2)
 ==============================================================
 
+NEW IN VERSION 7
+- FIX: songs no longer freeze after you drag the time slider around. Each song is now loaded fully
+  before it plays, the slider only jumps when you let go, and a frozen song restarts itself.
+- Liquid glass (iPhone style) on buttons, bars, song rows and playlists, over one fixed background colour.
+- Playlist rows show the song picture next to the number again.
+- "Edit" button on playlists: tap a number to move a song (swap places or insert there),
+  or use the arrows. Press Done when finished.
+- Playlist pictures are changed only from "Edit name and picture" (the separate camera / change / remove buttons are gone).
+
 NEW IN VERSION 6
 - FIX: songs no longer stop right after they start (removed a conflicting audio-focus request
   and added a safety net that restarts a song if it is paused by accident in its first seconds).
