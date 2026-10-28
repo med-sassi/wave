@@ -246,7 +246,16 @@ class MainActivity : AppCompatActivity() {
         val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
         try {
             val afd = contentResolver.openAssetFileDescriptor(uri, "r") ?: return status(404, "Not Found")
-            val total = afd.length
+            var total = afd.length
+            if (total <= 0) total = try { afd.parcelFileDescriptor.statSize } catch (e: Exception) { -1L }
+            if (total <= 0) {
+                // last resort: ask the media database for the file size
+                try {
+                    contentResolver.query(uri, arrayOf(MediaStore.Audio.Media.SIZE), null, null, null)?.use { c ->
+                        if (c.moveToFirst()) total = c.getLong(0)
+                    }
+                } catch (e: Exception) { }
+            }
             val mime = contentResolver.getType(uri) ?: "audio/mpeg"
             var start = 0L
             var end = total - 1

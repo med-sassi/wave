@@ -1,6 +1,14 @@
 WAVE for Android  -  your phone's music, found automatically  (version 2)
 ==============================================================
 
+NEW IN VERSION 8
+- FIX (real cause found): the app did not know the size of your songs, so it ignored "jump to this time"
+  requests and sent the song from the start, which froze playback after you moved the slider.
+  The app now reads the real file size, and the page also loads each song fully before playing.
+- Edit mode: drag a song by its handle (the dots on the right) or press and hold a song, then drag it.
+  The list makes room as you drag and scrolls by itself near the edges. Number tap and arrows still work.
+- New playlist design: glass header card with pills, and the songs in one glass panel with thin separators.
+
 NEW IN VERSION 7
 - FIX: songs no longer freeze after you drag the time slider around. Each song is now loaded fully
   before it plays, the slider only jumps when you let go, and a frozen song restarts itself.

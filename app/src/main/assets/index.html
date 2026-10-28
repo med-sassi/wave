@@ -934,6 +934,69 @@ body.glass .t-head{border-bottom:0}
 body.glass .tabbar{background:var(--lg-fill-strong),rgba(16,18,26,.56)}
 body.glass .dock{background:var(--lg-fill-strong),rgba(16,18,26,.5)}
 
+
+/* ================================================================
+   v8: cleaner playlist header + song list panel + drag to reorder
+   ================================================================ */
+/* header becomes one glass card */
+.col-hero{align-items:center;gap:18px;padding:18px;border-radius:34px;margin-bottom:6px;transform-origin:50% 0;will-change:transform,opacity}
+body.glass .col-hero{background:var(--lg-fill-strong),rgba(18,20,28,.3);box-shadow:var(--lg-rim),0 24px 60px rgba(0,0,0,.4)}
+body:not(.glass) .col-hero{background:var(--card)}
+.col-cover{position:relative;border-radius:26px;box-shadow:0 18px 40px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.14)}
+.col-cover::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,0) 38%);pointer-events:none}
+.col-meta .kind{font-size:12px;font-weight:700;letter-spacing:.02em;color:var(--acc);margin-bottom:6px}
+.col-meta h1{font-size:clamp(26px,7.4vw,40px);font-weight:800;letter-spacing:-.04em;line-height:1.04}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pills span{padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--text);background:rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.col-icons{margin-top:12px;flex-wrap:wrap}
+@media(max-width:700px){.col-hero{padding:14px;gap:14px;border-radius:30px}.col-cover{border-radius:22px;width:min(38vw,160px)}}
+
+/* song list: one glass panel, thin separators */
+body.glass .tracks{background:var(--lg-fill);box-shadow:var(--lg-rim),var(--lg-drop);border-radius:30px;padding:8px}
+body:not(.glass) .tracks{padding:0}
+body.glass .tracks .t-head{padding:6px 14px 8px;margin:0 0 4px}
+body.glass .track{background:none;box-shadow:none;border-radius:22px;margin:0;padding:8px 10px;position:relative}
+body.glass .track:hover{background:rgba(255,255,255,.08)}
+.track{position:relative}
+.track:not(.is-current):not(:last-child)::after{content:"";position:absolute;left:84px;right:14px;bottom:0;height:1px;background:rgba(255,255,255,.07)}
+.tracks.plain .track:not(.is-current):not(:last-child)::after{left:70px}
+body.glass .track.is-current{background:linear-gradient(145deg,color-mix(in srgb,var(--acc) 26%,rgba(255,255,255,.14)),rgba(255,255,255,.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 0 0 1px color-mix(in srgb,var(--acc) 55%,transparent),0 8px 24px color-mix(in srgb,var(--acc) 18%,transparent)}
+.t-main .art{border-radius:15px;box-shadow:0 6px 14px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.14)}
+.t-main{gap:13px}
+.t-title{font-size:15.5px}
+.t-artist{margin-top:1px}
+.track .num{font-size:13px;color:var(--faint);font-variant-numeric:tabular-nums}
+.track:active{transform:scale(.99)}
+@media(max-width:760px){.tracks.plain .t-main .art{width:52px}}
+
+/* edit mode + dragging */
+.mv-stack{display:flex;flex-direction:column;justify-content:center}
+.mv-stack .mv{width:34px;height:25px;border-radius:9px;display:grid;place-items:center;color:var(--muted)}
+.mv-stack .mv:active{background:rgba(255,255,255,.14);color:var(--text)}
+.mv-stack .mv svg{width:17px;height:17px}
+.grip{width:42px;height:46px;border-radius:14px;display:grid;place-items:center;color:var(--muted);touch-action:none;cursor:grab}
+.grip svg{width:22px;height:22px}
+.grip:active{color:var(--text);background:rgba(255,255,255,.1)}
+.tracks.editing{--cols:46px minmax(0,2fr) minmax(0,1.2fr) 56px 36px 44px}
+@media(max-width:760px){.tracks.editing{--cols:46px minmax(0,1fr) 36px 44px}}
+.tracks.editing .track{content-visibility:visible;touch-action:pan-y}
+.tracks.editing .track::after{display:none}
+.track.dragging{z-index:6;transition:none!important;cursor:grabbing;background:var(--lg-fill-strong),rgba(30,32,42,.9)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 22px 50px rgba(0,0,0,.6)!important}
+.tracks.is-dragging{touch-action:none}
+body.no-select,body.no-select *{-webkit-user-select:none;user-select:none}
+
+/* v8 polish */
+.col-icons{gap:8px;flex-wrap:nowrap}
+@media(max-width:700px){
+  .col-icons .round-btn.sm{width:36px;height:36px}
+  .col-icons .edit-btn{padding:0 12px}
+  .col-icons .edit-btn svg{width:16px;height:16px}
+  .tracks.editing{--cols:42px minmax(0,1fr) 32px 40px}
+  .tracks.editing .t-inl{display:none}
+  .num-btn{width:36px;height:36px}
+  .grip{width:38px}
+}
+
 </style>
 </head>
 <body>
@@ -971,6 +1034,7 @@ body.glass .dock{background:var(--lg-fill-strong),rgba(16,18,26,.5)}
     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
     <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></symbol>
     <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.7" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.7" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.7" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.7" fill="currentColor" stroke="none"/></symbol>
     <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8h3.2L8.4 5.5h7.2L17.3 8h3.2a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1h-17a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.6"/></symbol>
     <symbol id="i-logo" viewBox="0 0 40 40"><defs><linearGradient id="lgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5df08c"/><stop offset="1" stop-color="#12b8a0"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lgrad)"/><path d="M11 22v-4M17 28V12M23 25v-9M29 22v-4" stroke="#06121a" stroke-width="3.4" stroke-linecap="round" fill="none"/></symbol>
     <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 15V9M9 19V5M14 17V7M19 15v-4"/></symbol>
@@ -1405,8 +1469,18 @@ async function blobOrUrl(url, limit) {
     const res = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const len = Number(res.headers.get('content-length')) || 0;
-    if (!len || len > limit) { try { if (res.body) res.body.cancel(); } catch (e) {} return url; }
-    return URL.createObjectURL(await res.blob());
+    if (len > limit) { try { if (res.body) res.body.cancel(); } catch (e) {} return url; }
+    const type = res.headers.get('content-type') || '';
+    if (!res.body || !res.body.getReader) return URL.createObjectURL(await res.blob());
+    // read until the end (works even when the size is not announced)
+    const reader = res.body.getReader(), chunks = []; let n = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value); n += value.length;
+      if (n > limit) { try { reader.cancel(); } catch (e) {} return url; }
+    }
+    return URL.createObjectURL(new Blob(chunks, { type }));
   } catch (e) { return url; }
 }
 async function nativeSource(t) {
@@ -2019,7 +2093,7 @@ function rowHTML(t, n, plain, edit) {
     <div class="t-main">${art(t)}<div class="t-text"><div class="t-title" dir="auto">${nm}${t.remote === 'deezer' ? '<span class="tag">30s</span>' : ''}</div><div class="t-artist" dir="auto">${esc(t.artist)}${t.duration ? `<span class="t-inl"> · ${time(t.duration)}</span>` : ''}</div></div></div>
     <div class="t-album" dir="auto">${esc(t.album)}</div>
     <div class="t-time">${t.duration ? time(t.duration) : ''}</div>
-    ${edit ? `<button class="icon-btn mv" data-act="mv-up" aria-label="Move up">${ico('up')}</button><button class="icon-btn mv" data-act="mv-down" aria-label="Move down">${ico('down')}</button>` : `<button class="icon-btn like${l ? ' liked' : ''}" data-act="like" aria-pressed="${l}" aria-label="${l ? 'Remove from Liked songs' : 'Save to Liked songs'}">${ico('heart')}</button>
+    ${edit ? `<div class="mv-stack"><button class="mv" data-act="mv-up" aria-label="Move up">${ico('up')}</button><button class="mv" data-act="mv-down" aria-label="Move down">${ico('down')}</button></div><button class="grip" aria-label="Drag to move ${nm}" title="Drag to move">${ico('grip')}</button>` : `<button class="icon-btn like${l ? ' liked' : ''}" data-act="like" aria-pressed="${l}" aria-label="${l ? 'Remove from Liked songs' : 'Save to Liked songs'}">${ico('heart')}</button>
     <button class="icon-btn more" data-act="more" aria-haspopup="menu" aria-label="More options for ${nm}">${ico('more')}</button>`}
   </div>`;
 }
@@ -2177,9 +2251,9 @@ function collectionView(kind, id) {
   h += `<div class="col-cover${round ? ' round' : ''}">${artHtml}</div>`;
   const icons = (canEdit ? `<button class="btn small edit-btn${plEdit ? ' on' : ''}" data-act="edit-order" aria-pressed="${plEdit}">${ico(plEdit ? 'check' : 'edit')}${plEdit ? 'Done' : 'Edit'}</button><button class="round-btn sm" data-act="add-songs" data-id="${p.id}" aria-label="Add songs">${ico('playlist-add')}</button><button class="round-btn sm" data-act="pl-menu" data-id="${p.id}" aria-haspopup="menu" aria-label="Playlist options">${ico('more')}</button>`
     : (kind === 'artist' || kind === 'mix' || kind === 'liked') && ids.length ? `<button class="round-btn sm" data-act="save-list" data-list="${esc(key)}" data-name="${esc(name)}" aria-label="Save as playlist" title="Save as playlist">${ico('playlist-add')}</button>` : '');
-  h += `<div class="col-meta"><p class="kind">${label} · ${plural(ids.length, 'song')}${total ? ' · ' + longTime(total) : ''}</p><h1 dir="auto">${esc(name)}</h1>${icons ? `<div class="col-icons">${icons}</div>` : ''}</div></header>`;
+  h += `<div class="col-meta"><p class="kind">${label}</p><h1 dir="auto">${esc(name)}</h1><div class="pills"><span>${plural(ids.length, 'song')}</span>${total ? `<span>${longTime(total)}</span>` : ''}</div>${icons ? `<div class="col-icons">${icons}</div>` : ''}</div></header>`;
   h += `<div class="col-bar"><button class="btn-wide play" data-act="play-list" data-list="${esc(key)}">${ico('play', 'fillicon')}Play</button><button class="btn-wide ghost" data-act="shuffle-list" data-list="${esc(key)}">${ico('shuffle')}Shuffle</button></div>`;
-  if (canEdit && plEdit && ids.length) h += `<p class="edit-hint">Tap a number to move a song to another place, or use the arrows. Press Done when you’re finished.</p>`;
+  if (canEdit && plEdit && ids.length) h += `<p class="edit-hint">Drag a song by its ⋮⋮ handle (or press and hold it) to move it. You can also tap a number or use the arrows. Press Done when you’re finished.</p>`;
   if (ids.length) h += rows(ids, key, 0, true, canEdit && plEdit);
   else h += `<div class="empty"><h3>${empty[0]}</h3><p>${empty[1]}</p>${canEdit ? `<button class="btn primary" data-act="add-songs" data-id="${p.id}">${ico('plus')}Add songs</button>` : ''}</div>`;
   return h;
@@ -2224,14 +2298,14 @@ function setupColBar(isCol) {
 let scrollTick = 0;
 function onColScroll() {
   if (!document.body.classList.contains('view-col')) return;
-  const cover = $('.col-cover'), meta = $('.col-meta'), bar = $('#colBar');
-  if (!cover || !bar) return;
-  const y = Math.max(0, window.scrollY), h = cover.offsetHeight || 200;
-  const p = clamp(y / (h * 1.3), 0, 1);
-  cover.style.transform = `translate3d(0,${(y * 0.3).toFixed(1)}px,0) scale(${(1 - p * 0.5).toFixed(3)})`;
-  cover.style.opacity = String(Math.max(0, 1 - p * 1.2).toFixed(3));
-  if (meta) { meta.style.transform = `translate3d(0,${(y * 0.14).toFixed(1)}px,0)`; meta.style.opacity = String(Math.max(0, 1 - p * 1.6).toFixed(3)); }
-  bar.classList.toggle('show', y > h * 1.25);
+  const hero = $('.col-hero'), cover = $('.col-cover'), bar = $('#colBar');
+  if (!hero || !bar) return;
+  const y = Math.max(0, window.scrollY), h = hero.offsetHeight || 240;
+  const p = clamp(y / (h * 0.9), 0, 1);
+  hero.style.transform = `translate3d(0,${(y * 0.2).toFixed(1)}px,0) scale(${(1 - p * 0.1).toFixed(3)})`;
+  hero.style.opacity = String(Math.max(0, 1 - p * 1.15).toFixed(3));
+  if (cover) cover.style.transform = `scale(${(1 - p * 0.4).toFixed(3)})`;
+  bar.classList.toggle('show', y > h * 0.95);
 }
 window.addEventListener('scroll', () => { if (!scrollTick) scrollTick = requestAnimationFrame(() => { scrollTick = 0; onColScroll(); }); }, { passive: true });
 function renderSidebar() {
@@ -2663,6 +2737,94 @@ function reorderPlaylist(fn, movedId) {
     if (r.dataset.id === movedId) { r.classList.add('moved'); setTimeout(() => r.classList.remove('moved'), 1200); }
   });
 }
+let drag = null, dragTimer = null, pressInfo = null;
+function dragStart(row, e, grip) {
+  const wrap = row.parentElement, rows = $$('.track', wrap), from = rows.indexOf(row);
+  if (from < 0) return;
+  const rects = rows.map(r => r.getBoundingClientRect());
+  const step = rows.length > 1 ? Math.abs(rects[1].top - rects[0].top) : rects[0].height;
+  drag = { touch: !!e.touch, row, wrap, rows, from, to: from, startY: e.clientY, y: e.clientY, startScroll: window.scrollY, tops: rects.map(r => r.top + window.scrollY), step, h: rects[from].height, id: row.dataset.id, raf: 0 };
+  try { (grip || row).setPointerCapture(e.pointerId); } catch (err) {}
+  row.classList.add('dragging'); wrap.classList.add('is-dragging'); document.body.classList.add('no-select');
+  rows.forEach(r => { if (r !== row) r.style.transition = 'transform .28s cubic-bezier(.2,.8,.2,1)'; });
+  if (navigator.vibrate) navigator.vibrate(12);
+  dragTick();
+}
+function dragUpdate(autoScroll) {
+  const d = drag; if (!d) return;
+  if (autoScroll) {
+    // scroll when the finger nears the visible top or bottom (the floating bars cover the bottom edge)
+    const tops = [$('#dock'), $('.tabbar')].filter(el => el && getComputedStyle(el).display !== 'none').map(el => el.getBoundingClientRect().top);
+    const zoneBottom = Math.min(innerHeight, ...tops) - 64;
+    if (d.y < 120) window.scrollBy(0, -Math.min(16, (120 - d.y) / 5));
+    else if (d.y > zoneBottom) window.scrollBy(0, Math.min(16, (d.y - zoneBottom) / 5));
+  }
+  const dy = (d.y - d.startY) + (window.scrollY - d.startScroll);
+  d.row.style.transform = `translate3d(0,${dy}px,0) scale(1.025)`;
+  const center = d.tops[d.from] + d.h / 2 + dy;
+  let to = d.from, best = Infinity;
+  d.tops.forEach((t, k) => { const dist = Math.abs(center - (t + d.rows[k].offsetHeight / 2)); if (dist < best) { best = dist; to = k; } });
+  if (to !== d.to) { d.to = to; if (navigator.vibrate) navigator.vibrate(8); }
+  d.rows.forEach((r, k) => {
+    if (r === d.row) return;
+    const shift = (d.from < d.to && k > d.from && k <= d.to) ? -d.step : (d.from > d.to && k < d.from && k >= d.to) ? d.step : 0;
+    r.style.transform = shift ? `translate3d(0,${shift}px,0)` : '';
+  });
+}
+function dragTick() {
+  if (!drag) return;
+  dragUpdate(true);
+  drag.raf = requestAnimationFrame(dragTick);
+}
+function dragEnd() {
+  const d = drag; if (!d) return;
+  dragUpdate(false);                 // use the exact release position
+  drag = null;
+  cancelAnimationFrame(d.raf); document.body.classList.remove('no-select'); d.wrap.classList.remove('is-dragging');
+  if (d.to === d.from) {
+    d.rows.forEach(r => { r.style.transition = 'transform .3s cubic-bezier(.2,.8,.2,1)'; r.style.transform = ''; });
+    d.row.classList.remove('dragging');
+    setTimeout(() => d.rows.forEach(r => { r.style.transition = ''; }), 350);
+    return;
+  }
+  reorderPlaylist(arr => { const i = arr.indexOf(d.id); arr.splice(i, 1); arr.splice(d.to, 0, d.id); }, d.id);
+  toast(`Moved to place ${d.to + 1}`, 1800);
+}
+/* grab with the handle (mouse, pen or finger) */
+document.addEventListener('pointerdown', e => {
+  if (!plEdit || drag) return;
+  const row = e.target.closest('.editing .track'); if (!row) return;
+  const grip = e.target.closest('.grip');
+  if (grip) { e.preventDefault(); dragStart(row, e, grip); return; }
+  if (e.pointerType === 'touch' || e.target.closest('button')) return;   // fingers use the touch handlers below
+  pressInfo = { x: e.clientX, y: e.clientY, row, pid: e.pointerId };
+  dragTimer = setTimeout(() => { if (pressInfo) { dragStart(pressInfo.row, { clientY: pressInfo.y, pointerId: pressInfo.pid }, null); pressInfo = null; } }, 380);
+});
+document.addEventListener('pointermove', e => {
+  if (pressInfo && !pressInfo.touch && Math.hypot(e.clientX - pressInfo.x, e.clientY - pressInfo.y) > 9) { clearTimeout(dragTimer); pressInfo = null; }
+  if (drag && !drag.touch) drag.y = e.clientY;
+});
+const pointerRelease = () => { if (pressInfo && !pressInfo.touch) { clearTimeout(dragTimer); pressInfo = null; } if (drag && !drag.touch) dragEnd(); };
+document.addEventListener('pointerup', pointerRelease);
+document.addEventListener('pointercancel', pointerRelease);
+/* press and hold a song with your finger, then drag */
+document.addEventListener('touchstart', e => {
+  if (!plEdit || drag || e.touches.length !== 1) return;
+  const row = e.target.closest('.editing .track'); if (!row || e.target.closest('button')) return;
+  const t = e.touches[0];
+  pressInfo = { x: t.clientX, y: t.clientY, row, touch: true };
+  clearTimeout(dragTimer);
+  dragTimer = setTimeout(() => { if (pressInfo) { dragStart(pressInfo.row, { clientY: pressInfo.y, pointerId: -1, touch: true }, null); pressInfo = null; } }, 380);
+}, { passive: false });
+document.addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  if (pressInfo && pressInfo.touch && t && Math.hypot(t.clientX - pressInfo.x, t.clientY - pressInfo.y) > 9) { clearTimeout(dragTimer); pressInfo = null; }
+  if (drag) { if (drag.touch && t) drag.y = t.clientY; if (e.cancelable) e.preventDefault(); }
+}, { passive: false });
+const touchRelease = () => { if (pressInfo && pressInfo.touch) { clearTimeout(dragTimer); pressInfo = null; } if (drag && drag.touch) dragEnd(); };
+document.addEventListener('touchend', touchRelease);
+document.addEventListener('touchcancel', touchRelease);
+
 function askMove({ name, pos, max }) {
   return new Promise(res => {
     const d = $('#moveDlg'), inp = $('#movePos'); let result = null, mode = 'swap';
