@@ -1,6 +1,17 @@
 WAVE for Android  -  your phone's music, found automatically  (version 2)
 ==============================================================
 
+NEW IN VERSION 9
+- Time slider: you can now press and DRAG it (before, the playing song kept pulling it back).
+- Smart artists: names that differ only by case, accents or a swapped / missing letter become one artist
+  (young rz = YONUG rz); songs by two artists ("ala , ktyb", "ala/ktyb", "A feat. B") appear under BOTH;
+  a song with no artist but "ala - song name" in its title goes to artist "ala".
+  Turn it off or rename an artist (artist page > Rename) if it ever guesses wrong.
+- All covers are the same square size; a song with no cover borrows one from another song by the same artist.
+- Up next shows just the next 2 songs in nice cards, "Show all" opens the rest.
+- Dragging a song: a green slot and a number badge show exactly where it will land.
+- Smoother: long lists load in chunks, lighter glass effects, sliding highlight on the bottom bar.
+
 NEW IN VERSION 8
 - FIX (real cause found): the app did not know the size of your songs, so it ignored "jump to this time"
   requests and sent the song from the start, which froze playback after you moved the slider.

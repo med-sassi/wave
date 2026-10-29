@@ -14,8 +14,10 @@ import java.io.File
 
 /** Finds album artwork for a song and keeps a small JPEG copy in the app cache. */
 object ArtCache {
+    private const val SIZE = 480
+
     fun get(ctx: Context, id: Long): ByteArray? {
-        val dir = File(ctx.cacheDir, "art")
+        val dir = File(ctx.cacheDir, "art2")
         dir.mkdirs()
         val hit = File(dir, "$id.jpg")
         val miss = File(dir, "$id.none")
@@ -26,7 +28,7 @@ object ArtCache {
         var bmp: Bitmap? = null
         if (Build.VERSION.SDK_INT >= 29) {
             try {
-                bmp = ctx.contentResolver.loadThumbnail(uri, Size(400, 400), null)
+                bmp = ctx.contentResolver.loadThumbnail(uri, Size(SIZE, SIZE), null)
             } catch (e: Exception) { /* no thumbnail */ }
         }
         if (bmp == null) bmp = fromTags(ctx, uri)
@@ -35,10 +37,18 @@ object ArtCache {
             return null
         }
         val out = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.JPEG, 86, out)
+        square(bmp).compress(Bitmap.CompressFormat.JPEG, 88, out)
         val bytes = out.toByteArray()
         try { hit.writeBytes(bytes) } catch (e: Exception) { }
         return bytes
+    }
+
+    /** Centre-crops to a square and resizes, so every cover has exactly the same size. */
+    private fun square(src: Bitmap): Bitmap {
+        val side = minOf(src.width, src.height)
+        if (side <= 0) return src
+        val cropped = Bitmap.createBitmap(src, (src.width - side) / 2, (src.height - side) / 2, side, side)
+        return if (side == SIZE) cropped else Bitmap.createScaledBitmap(cropped, SIZE, SIZE, true)
     }
 
     private fun fromTags(ctx: Context, uri: Uri): Bitmap? {
