@@ -1,6 +1,14 @@
 WAVE for Android  -  your phone's music, found automatically  (version 2)
 ==============================================================
 
+NEW IN VERSION 10
+- Cards (Recently played, playlists, artists) can no longer grow because of a long song title:
+  every card and cover is the same size.
+- Artists: "ala", "A.L.A", "ala - Topic" and "ALA Topic" are now ONE artist; "ktyb" and "ktybon" are one artist.
+- Collaborations: a guest who only appears on that one song is not made an artist
+  (samara, baya -> only samara if samara has other songs; if all artists only have that song, only the first one is kept).
+  The song still shows all credits and is found by searching any of the names.
+
 NEW IN VERSION 9
 - Time slider: you can now press and DRAG it (before, the playing song kept pulling it back).
 - Smart artists: names that differ only by case, accents or a swapped / missing letter become one artist

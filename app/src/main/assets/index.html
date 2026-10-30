@@ -1059,6 +1059,15 @@ body.glass .dock,body.glass .tabbar{backdrop-filter:blur(16px) saturate(1.9) bri
 html{scroll-behavior:auto}
 #view{contain:layout style}
 
+
+/* v10: cards can never grow because of a long title */
+.card{min-width:0;overflow:hidden}
+.rail{align-items:flex-start}
+.rail .card{flex:0 0 168px;width:168px;max-width:168px}
+.cards .card{width:100%}
+.card .c-title,.card .c-sub{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile,.feature,.pl-row{min-width:0}
+
 </style>
 </head>
 <body>
@@ -1712,7 +1721,11 @@ const specialArt = (kind, extra = '') => kind === 'liked'
   : `<span class="art gen ${extra}" style="--a1:hsl(198 68% 52%);--a2:hsl(238 48% 30%)">${ico('clock')}</span>`;
 
 /* ---------- artists: clean names, merge look-alikes, split collaborations ---------- */
-const nameKey = s => String(s || '').toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
+const nameKey = s => {
+  let k = String(s || '').toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/['’`´.]/g, '').replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
+  for (let i = 0; i < 3; i++) { const n = k.replace(/\s+(?:topic|vevo|official|channel)$/, '').trim(); if (!n || n === k) break; k = n; }   // "ala - Topic" = "ala"
+  return k;
+};
 const isUnknownArtist = s => { const k = nameKey(s); return !k || k === 'unknown artist' || k === 'unknown' || k === 'unknown'; };
 function osa(a, b) {
   const al = a.length, bl = b.length; if (!al) return bl; if (!bl) return al;
@@ -1728,7 +1741,9 @@ function osa(a, b) {
 function sameArtist(a, b) {
   if (a === b) return true;
   const la = a.length, lb = b.length, mn = Math.min(la, lb);
-  if (mn < 5 || a[0] !== b[0] || Math.abs(la - lb) > 2) return false;
+  if (a[0] !== b[0] || Math.abs(la - lb) > 2) return false;
+  if (mn >= 4 && (a.startsWith(b) || b.startsWith(a))) return true;      // ktyb / ktybon
+  if (mn < 5) return false;
   const d = osa(a, b);
   if (d === 1) {
     if (la !== lb) return mn >= 7;                                   // one letter missing / extra
@@ -1768,10 +1783,12 @@ function fixLibrary(list) {
     p.parts = !p.ar ? [] : smart ? splitArtists(p.ar, solo) : [p.ar];
     p.parts.forEach(n => { const k = nameKey(n); if (!k) return; if (!spell.has(k)) spell.set(k, new Map()); const s = spell.get(k); s.set(n, (s.get(n) || 0) + 1); });
   });
+  const together = new Set();
+  pre.forEach(p => { const ks = p.parts.map(nameKey).filter(Boolean); ks.forEach(x => ks.forEach(y => { if (x !== y) together.add(x + '|' + y); })); });
   const keys = Array.from(spell.keys()).sort((x, y) => { const cx = Array.from(spell.get(x).values()).reduce((p, q) => p + q, 0), cy = Array.from(spell.get(y).values()).reduce((p, q) => p + q, 0); return cy - cx; });
   const clusters = [];
   keys.forEach(k => {
-    const c = clusters.find(c => smart ? sameArtist(k, c.rep) : k === c.rep);
+    const c = clusters.find(c => (smart ? sameArtist(k, c.rep) : k === c.rep) && !c.keys.some(ck => together.has(ck + '|' + k)));
     if (c) c.keys.push(k); else clusters.push({ rep: k, keys: [k] });
   });
   const canon = new Map();
@@ -1784,9 +1801,14 @@ function fixLibrary(list) {
     c.keys.forEach(k => canon.set(k, best));
   });
   pre.forEach(p => {
-    const names = []; p.parts.forEach(n => { const c = canon.get(nameKey(n)); if (c && !names.includes(c)) names.push(c); });
-    if (!names.length) names.push('Unknown artist');
-    p.t.name = p.nm || p.t.name0; p.t.artists = names; p.t.artist = names.join(', ');
+    p.names = []; p.parts.forEach(n => { const c = canon.get(nameKey(n)); if (c && !p.names.includes(c)) p.names.push(c); });
+    if (!p.names.length) p.names.push('Unknown artist');
+  });
+  const cnt = new Map(); pre.forEach(p => p.names.forEach(n => cnt.set(n, (cnt.get(n) || 0) + 1)));
+  pre.forEach(p => {
+    let keep = p.names;
+    if (smart && keep.length > 1) { const solid = keep.filter(n => cnt.get(n) >= 2); keep = solid.length ? solid : [keep[0]]; }
+    p.t.name = p.nm || p.t.name0; p.t.artists = keep; p.t.artist = p.names.join(', ');
   });
 }
 /* the same artist's other songs lend their cover to songs that have none */
