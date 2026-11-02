@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.webkit.WebViewAssetLoader
+import java.io.BufferedInputStream
 import java.io.ByteArrayInputStream
 import java.io.FilterInputStream
 import java.io.InputStream
@@ -80,7 +81,14 @@ class MainActivity : AppCompatActivity() {
         webRef = WeakReference(web)
         setContentView(web)
         web.setBackgroundColor(0xFF0C0C0E.toInt())
+        web.isVerticalScrollBarEnabled = false
+        web.isHorizontalScrollBarEnabled = false
+        requestHighRefreshRate()                               // 90 / 120 Hz phones scroll at full speed
         web.settings.apply {
+            setSupportZoom(false)
+            builtInZoomControls = false
+            textZoom = 100
+            cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
             javaScriptEnabled = true
             domStorageEnabled = true
             mediaPlaybackRequiresUserGesture = false
@@ -129,6 +137,22 @@ class MainActivity : AppCompatActivity() {
         })
 
         if (!hasAudioPermission()) askPermission()
+    }
+
+    /** Asks Android for the highest refresh rate the screen supports (same resolution). */
+    private fun requestHighRefreshRate() {
+        try {
+            @Suppress("DEPRECATION")
+            val d = if (Build.VERSION.SDK_INT >= 30) display else windowManager.defaultDisplay
+            if (d == null) return
+            val cur = d.mode
+            val best = d.supportedModes
+                .filter { it.physicalWidth == cur.physicalWidth && it.physicalHeight == cur.physicalHeight }
+                .maxByOrNull { it.refreshRate } ?: return
+            val lp = window.attributes
+            lp.preferredDisplayModeId = best.modeId
+            window.attributes = lp
+        } catch (e: Exception) { }
     }
 
     override fun onResume() {
@@ -282,7 +306,7 @@ class MainActivity : AppCompatActivity() {
                 partial = true
             }
 
-            val input = afd.createInputStream()
+            val input = BufferedInputStream(afd.createInputStream(), 128 * 1024)
             skipFully(input, start)
             val h = mutableMapOf("Accept-Ranges" to "bytes", "Cache-Control" to "no-store")
             val stream: InputStream

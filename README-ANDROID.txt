@@ -1,6 +1,15 @@
 WAVE for Android  -  your phone's music, found automatically  (version 2)
 ==============================================================
 
+NEW IN VERSION 12 - SMOOTHNESS
+- Opening a screen is one quick fade (0.2 s) instead of dozens of staggered animations that took ~1 second.
+- Coming back to the app no longer rebuilds the screen or loses your place unless your music really changed.
+- Scrolling: fixed background no longer repaints while you scroll; lighter glass (smaller blur, no big blurred
+  shadows on every card and row); song rows reserve their true height so lists never jump.
+- Player: the beat effect only moves the cover (30 fps visualizer); the play button pulses with a cheap animation.
+- The next song is loaded in the background, so Next and auto-advance start almost instantly; songs load faster.
+- Android: uses the highest screen refresh rate (90/120 Hz), buffered song streaming, no zoom / scrollbars.
+
 NEW IN VERSION 11
 - Add songs sheet redesigned: normal-size search bar, filter chips (Not added yet, length) and artist chips
   with a little cover and a song count. Artist chips are now single artists (no more "A, B" chips).

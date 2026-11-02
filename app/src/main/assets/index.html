@@ -1148,6 +1148,55 @@ body.glass .am-row{background:var(--lg-fill);box-shadow:var(--lg-rim)}
 .am-row .art.round,.am-hero .art.round{border-radius:50%}
 .am-row .art.round img,.am-hero .art.round img{border-radius:50%}
 
+
+/* ================================================================
+   v12: SMOOTHNESS  (same look, much cheaper to draw)
+   ================================================================ */
+html{touch-action:manipulation;overscroll-behavior-y:none}
+@media(pointer:coarse){*{scrollbar-width:none}*::-webkit-scrollbar{display:none}}
+
+/* a fixed background that does not repaint while you scroll */
+body{background:none!important;background-attachment:scroll!important}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;transform:translateZ(0);
+  background:radial-gradient(1100px 650px at 18% -12%,rgba(86,104,255,.1),transparent 60%),radial-gradient(900px 600px at 100% 108%,rgba(40,200,150,.06),transparent 60%),#09090d}
+
+/* screen changes: one quick fade instead of dozens of staggered animations */
+@keyframes viewIn{from{opacity:0;transform:translate3d(0,8px,0)}to{opacity:1;transform:none}}
+#view.view-in{animation:viewIn .2s cubic-bezier(.2,.8,.2,1) both}
+#view.view-in>*,#view.view-in .tile,#view.view-in .track,#view.view-in .rail .card,#view.view-in .feature,#view.view-in .pl-row{animation:none!important}
+.q-row,.q-card{animation:rise .2s cubic-bezier(.2,.8,.2,1) both!important}
+.np.open .np-info,.np.open .np-seek,.np.open .np-controls,.np.open .np-vol{animation-duration:.25s!important;animation-delay:0s!important}
+dialog[open]{animation-duration:.26s}
+dialog[open]::backdrop{animation-duration:.2s}
+.dock{animation-duration:.3s}
+.menu:not([hidden]){animation-duration:.18s}
+.toast{transition:opacity .2s,transform .25s cubic-bezier(.2,.9,.3,1.1)}
+.ripple{animation-duration:.45s}
+
+/* glass: keep the rim light, drop the expensive blurred shadows */
+body.glass{
+  --lg-rim:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(255,255,255,.14),inset 1px 0 0 rgba(255,255,255,.14),inset -1px 0 0 rgba(255,255,255,.08);
+  --lg-drop:0 0 0 transparent;
+}
+body.glass .dock,body.glass .tabbar{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:var(--lg-rim)}
+body.glass dialog,body.glass .menu{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:var(--lg-rim)}
+body.glass .cs-bg{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+body.glass .col-back,.col-back,.cover-badge{backdrop-filter:none;-webkit-backdrop-filter:none}
+dialog::backdrop,dialog[open]::backdrop{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(3,8,12,.72)}
+body.glass .col-hero,body.glass .tracks{box-shadow:var(--lg-rim)}
+.dock::before{filter:blur(14px)}
+.t-main .art,.q-card .art,.pv{box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+
+/* rows: correct placeholder size so scrolling never jumps */
+.track{contain-intrinsic-size:auto 68px;contain:layout paint style}
+.tracks.editing .track,.track.dragging{contain:none}
+
+/* player: only cheap (transform / opacity) animations */
+.np-ring{will-change:transform,opacity}
+@keyframes playBreath{0%,100%{scale:1}50%{scale:1.05}}
+body.playing .np-controls .play-btn{animation:playBreath 2.6s ease-in-out infinite}
+body.playing .np-controls .play-btn:active{animation:none}
+.sk-row i,.sk-row b{animation-duration:1.6s}
 </style>
 </head>
 <body>
@@ -1611,19 +1660,24 @@ async function ensureAccent(t) {
   } catch (e) { /* no artwork */ }
 }
 /* songs found on the phone by the Android app */
-function nativeScan() {
+let lastScanKey = null;
+function nativeScan(force) {
   try {
     nativePerm = !!WaveNative.hasPermission();
-    if (!nativePerm) { tracks = []; reindex(); return; }
+    if (!nativePerm) { const k = 'noperm'; const ch = k !== lastScanKey; lastScanKey = k; if (ch || force) { tracks = []; reindex(); } return ch || !!force; }
+    const raw = WaveNative.getAudioList();
+    if (!force && raw === lastScanKey) return false;      // nothing changed: do no work, keep the screen as it is
+    lastScanKey = raw;
     const old = new Map(tracks.map(t => [t.id, t]));
-    tracks = JSON.parse(WaveNative.getAudioList()).map(m => {
+    tracks = JSON.parse(raw).map(m => {
       const id = 'a' + m.id, o = old.get(id);
       return { id, mid: m.id, native: true, name: m.title || 'Unknown song', name0: m.title || 'Unknown song', artist0: m.artist || '', artist: m.artist || '', album: m.album || '', duration: (m.duration || 0) / 1000, added: m.added || 0, acc: o ? o.acc : null, accTried: o ? o.accTried : false };
     });
     fixLibrary(tracks);
     reindex();
     if (curId && !tmap.has(curId) && tracks.length) { loadToken++; wantPlay = false; audio.pause(); audio.removeAttribute('src'); loadedId = null; curId = null; playing = false; qi = -1; queue = []; base = []; }
-  } catch (e) { tracks = []; reindex(); }
+    return true;
+  } catch (e) { tracks = []; reindex(); lastScanKey = null; return true; }
 }
 /* Songs are loaded fully into memory first, so jumping around in a song never
    depends on many small file requests (that made playback stall after scrubbing). */
@@ -1634,7 +1688,7 @@ async function blobOrUrl(url, limit) {
     const len = Number(res.headers.get('content-length')) || 0;
     if (len > limit) { try { if (res.body) res.body.cancel(); } catch (e) {} return url; }
     const type = res.headers.get('content-type') || '';
-    if (!res.body || !res.body.getReader) return URL.createObjectURL(await res.blob());
+    if (len > 0 || !res.body || !res.body.getReader) return URL.createObjectURL(await res.blob());   // size known: native read, no JS chunk loop
     // read until the end (works even when the size is not announced)
     const reader = res.body.getReader(), chunks = []; let n = 0;
     for (;;) {
@@ -1646,8 +1700,26 @@ async function blobOrUrl(url, limit) {
     return URL.createObjectURL(new Blob(chunks, { type }));
   } catch (e) { return url; }
 }
+let preloaded = null;   // { id, url } : the next song, already read into memory
+function dropPreload() { if (preloaded) { try { URL.revokeObjectURL(preloaded.url); } catch (e) {} preloaded = null; } }
+function preloadNext() {
+  if (!NATIVE || repeat === 'one' || document.hidden) return;
+  const nid = queue[qi + 1] !== undefined ? queue[qi + 1] : (repeat === 'all' ? queue[0] : undefined);
+  const t = nid && T(nid);
+  if (!t || t.remote || !t.native || nid === curId || (preloaded && preloaded.id === nid)) return;
+  const token = loadToken;
+  dropPreload();
+  blobOrUrl('/media/' + t.mid, 40e6).then(u => {
+    if (!u.startsWith('blob:')) return;
+    if (token !== loadToken || (preloaded && preloaded.id === nid)) { URL.revokeObjectURL(u); return; }
+    preloaded = { id: nid, url: u };
+  });
+}
 async function nativeSource(t) {
-  if (!t.remote) return blobOrUrl('/media/' + t.mid, 70e6);
+  if (!t.remote) {
+    if (preloaded && preloaded.id === t.id) { const u = preloaded.url; preloaded = null; return u; }
+    return blobOrUrl('/media/' + t.mid, 70e6);
+  }
   const u = await resolveRemote(t);
   return blobOrUrl(API(u), t.remote === 'deezer' ? 10e6 : 40e6);
 }
@@ -2045,7 +2117,7 @@ async function load(id, { play = true, at = 0, recover = false } = {}) {
   lastTime = at;
   syncTime();
   if (play) {
-    try { await audio.play(); }
+    try { await audio.play(); if (token === loadToken) setTimeout(() => { if (token === loadToken) preloadNext(); }, 1500); }
     catch (e) { if (token === loadToken) { playing = false; syncPlayState(); if (e.name !== 'AbortError') toast('Your browser couldn’t play this file. MP3, M4A, WAV, OGG and FLAC usually work.', 4200); } }
   }
   save();
@@ -2305,14 +2377,18 @@ function resizeViz() {
   const c = $('#viz'), d = Math.min(devicePixelRatio || 1, 2);
   c.width = Math.max(1, Math.round(c.clientWidth * d)); c.height = Math.max(1, Math.round(c.clientHeight * d));
 }
-function drawViz() {
+let vizLast = 0, vizCtx = null, npArtEl = null, lastBeat = -1;
+function drawViz(ts) {
   vizRaf = 0;
-  const c = $('#viz'), x = c.getContext('2d'), W = c.width, H = c.height;
+  if (playing && npOpen && !document.hidden && analyser && ts && ts - vizLast < 30) { vizRaf = requestAnimationFrame(drawViz); return; }   // ~30 fps is plenty
+  vizLast = ts || 0;
+  const c = $('#viz'), x = vizCtx || (vizCtx = c.getContext('2d')), W = c.width, H = c.height;
   if (!W || !H) return;
   x.clearRect(0, 0, W, H);
   if (analyser && playing) analyser.getByteFrequencyData(vizData);
   const bass = analyser && playing ? ((vizData[0] + vizData[1] + vizData[2] + vizData[3]) / 4 / 255) : 0;
-  $('#np').style.setProperty('--beat', (bass * bass).toFixed(3));
+  const beat = Math.round(bass * bass * 40) / 40;
+  if (beat !== lastBeat) { lastBeat = beat; (npArtEl || (npArtEl = $('.np-art'))).style.setProperty('--beat', beat); }
   const n = 36, gap = W / n, bw = Math.max(2, gap * 0.56);
   x.fillStyle = `hsl(${uiAcc.h},${uiAcc.s}%,${uiAcc.l}%)`;
   for (let i = 0; i < n; i++) {
@@ -2619,12 +2695,16 @@ function setupColBar(isCol) {
   bar.style.setProperty('--hero', heroColor || '#222');
   bar.innerHTML = `<span class="cs-bg"></span><button class="col-back" data-act="back" aria-label="Back">${ico('chevron-left')}</button><span class="cs-title trunc" dir="auto">${esc(colBar.name)}</span><button class="fab small" data-act="play-list" data-list="${esc(colBar.key)}" aria-label="Play">${ico('play', 'fillicon')}</button>`;
 }
-let scrollTick = 0;
+let scrollTick = 0, colCache = null;
 function onColScroll() {
   if (!document.body.classList.contains('view-col')) return;
-  const hero = $('.col-hero'), cover = $('.col-cover'), bar = $('#colBar');
-  if (!hero || !bar) return;
-  const y = Math.max(0, window.scrollY), h = hero.offsetHeight || 240;
+  if (!colCache || !colCache.hero.isConnected) {
+    const hero = $('.col-hero'), bar = $('#colBar');
+    if (!hero || !bar) return;
+    colCache = { hero, bar, cover: $('.col-cover'), h: hero.offsetHeight || 240 };
+  }
+  const { hero, cover, bar, h } = colCache;
+  const y = Math.max(0, window.scrollY);
   const p = clamp(y / (h * 0.9), 0, 1);
   hero.style.transform = `translate3d(0,${(y * 0.2).toFixed(1)}px,0) scale(${(1 - p * 0.1).toFixed(3)})`;
   hero.style.opacity = String(Math.max(0, 1 - p * 1.15).toFixed(3));
@@ -2655,7 +2735,7 @@ function placeTabPill() {
   pill.style.opacity = '1';
   pill.style.transform = `translateX(${tab.offsetLeft + (tab.offsetWidth - pill.offsetWidth) / 2}px)`;
 }
-window.addEventListener('resize', () => placeTabPill());
+window.addEventListener('resize', () => { colCache = null; placeTabPill(); });
 function render() { renderSidebar(); renderView(); setNavState(); }
 function updateSearchUI() { $('#searchbar').classList.toggle('has-text', !!$('#search').value); }
 const navStack = [];
@@ -2979,7 +3059,7 @@ function act(a, el) {
     case 'tab': libTab = el.dataset.v; if (el.dataset.go) go(el.dataset.go); else renderView(true); break;
     case 'pick-cover': coverMode = 'pl:' + el.dataset.id; $('#coverInput').click(); break;
     case 'grant': try { WaveNative.requestPermission(); } catch (e) {} break;
-    case 'rescan': window.__waveSync(); toast('Library updated'); break;
+    case 'rescan': window.__waveSync(true); toast('Library updated'); break;
     case 'import': importTarget = null; $('#filePicker').click(); break;
     case 'new-playlist': createPlaylist(); break;
     case 'resume': { const id = (curId && tmap.has(curId)) ? curId : (recent[0] || tracks[0]?.id); if (!id) break; if (id === curId) togglePlay(); else playFromList('all', id); break; }
@@ -3424,7 +3504,7 @@ $('#settingsBody').addEventListener('input', e => { if (e.target.id === 'setName
 })();
 
 /* hooks used by the Android app */
-window.__waveSync = () => { if (!NATIVE) return; nativeScan(); render(); updateMeta(); };
+window.__waveSync = force => { if (!NATIVE) return; if (nativeScan(!!force)) { render(); updateMeta(); } };
 window.__waveCtl = c => {
   if (c === 'play') { if (!playing) togglePlay(); }
   else if (c === 'pause') { if (playing) togglePlay(); }
