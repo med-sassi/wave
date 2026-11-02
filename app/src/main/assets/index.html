@@ -1068,6 +1068,86 @@ html{scroll-behavior:auto}
 .card .c-title,.card .c-sub{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tile,.feature,.pl-row{min-width:0}
 
+/* ================================================================
+   v11: redesigned add-songs sheet, 30-second previews, artist manager
+   ================================================================ */
+dialog.wide{height:min(92dvh,800px)}
+#pickDlg,#artistsDlg{height:min(92dvh,800px)}
+body.glass #pickDlg,body.glass #artistsDlg,body.glass #settingsDlg{background:var(--lg-fill-strong),rgba(14,16,24,.84)}
+.sheet-grip{display:block;flex:none;width:44px;height:5px;margin:0 auto 12px;border-radius:99px;background:rgba(255,255,255,.26)}
+.dlg.pick,.dlg.am{height:100%;padding:12px 18px 0;overflow:hidden}
+.pick-head,.am-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
+.pick-head h3,.am-head h3{font-size:23px;font-weight:800;letter-spacing:-.03em;margin:0;min-width:0}
+.pick-head p,.am-sub{margin:3px 0 12px;font-size:13px;color:var(--muted)}
+.am-head{margin-bottom:6px}
+.am-head h3{flex:1}
+.pk-search{flex:none!important;max-width:none!important;width:100%;height:50px!important;border-radius:18px!important;margin:0 0 4px}
+.pick-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;margin:0 -18px;padding:0 18px 14px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pick-filters{padding-top:4px}
+.pick-filters .chips{margin:0 -18px;padding:6px 18px 8px;gap:8px}
+.pick-filters .chip,body.glass .pick-filters .chip{height:38px;font-size:13.5px;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.pick-filters .chip.on,body.glass .pick-filters .chip.on{box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+.chip.toggle svg{width:15px;height:15px;margin-right:6px}
+.chip.artist{display:inline-flex;align-items:center;gap:8px;padding:0 14px 0 5px}
+.chip.artist .art{width:28px;height:28px;border-radius:50%;box-shadow:none}
+.chip.artist .art svg{display:none}
+.chip.artist b{font-weight:700;opacity:.6;font-size:12px}
+.pick-bar{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px -18px 8px;padding:10px 18px;color:var(--muted);font-size:13px;font-weight:700;background:linear-gradient(180deg,rgba(18,20,28,.96),rgba(18,20,28,.82));backdrop-filter:blur(10px)}
+.pick-bar .btn{height:40px}
+.pick-list{display:flex;flex-direction:column}
+.pk-row{display:flex;align-items:center;gap:13px;padding:8px;margin-bottom:8px;border-radius:22px;background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);transition:opacity .2s,transform .2s,background .2s}
+body.glass .pk-row{background:var(--lg-fill);box-shadow:var(--lg-rim)}
+.pk-row.is-added{opacity:.62}
+.pk-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pk-title{font-size:15.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-artist{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv{position:relative;flex:none;width:58px;height:58px;border-radius:17px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,.4),inset 0 0 0 1px rgba(255,255,255,.14);transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+.pv:active{transform:scale(.92)}
+.pv .art{position:absolute;inset:0;width:100%;height:100%;border-radius:0;box-shadow:none}
+.pv-ico{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.26);color:#fff;transition:background .2s}
+.pv-ico svg{grid-area:1/1;width:24px;height:24px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.6))}
+.pv-ico .i-pause{display:none}
+.pv.on .pv-ico{background:rgba(0,0,0,.52)}
+.pv.on .pv-ico .i-play{display:none}
+.pv.on .pv-ico .i-pause{display:block}
+.pv-bar{position:absolute;left:7px;right:7px;bottom:6px;height:4px;border-radius:4px;background:rgba(255,255,255,.3);overflow:hidden;opacity:0;transition:opacity .2s}
+.pv.on .pv-bar{opacity:1}
+.pv-bar::after{content:"";position:absolute;inset:0;background:var(--acc);transform-origin:0 50%;transform:scaleX(var(--pv,0))}
+.add-btn{flex:none;position:relative;overflow:hidden;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:var(--on-acc);background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 76%,#fff),var(--acc) 55%,color-mix(in srgb,var(--acc) 84%,#000));box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 8px 20px color-mix(in srgb,var(--acc) 35%,transparent);transition:transform .25s cubic-bezier(.3,1.6,.5,1),background .2s}
+.add-btn:active{transform:scale(.86)}
+.add-btn svg{width:22px;height:22px}
+.add-btn.on{background:rgba(255,255,255,.14);color:var(--acc);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.add-btn.rem{background:rgba(255,90,90,.16);color:#ff9d9a;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.add-btn.pop svg{animation:checkPop .5s cubic-bezier(.3,1.6,.5,1)}
+.pick-foot{flex:none;display:flex;gap:10px;padding:12px 0 calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(255,255,255,.08)}
+.pick-foot .btn{height:52px;border-radius:18px;font-size:15.5px}
+.pick-foot #pickDone{flex:1}
+
+/* artist manager */
+.am-actions{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;flex:none}
+.am-actions .btn.small{height:40px}
+.am-addbtn{flex:none;width:100%;height:52px;margin-bottom:12px;border-radius:18px}
+.am-hero{display:flex;align-items:center;gap:16px;margin:4px 0 14px;flex:none}
+.am-hero .art{width:84px;box-shadow:0 12px 30px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.16)}
+.am-row{display:flex;align-items:center;gap:14px;width:100%;padding:8px 14px 8px 8px;margin-bottom:8px;border-radius:22px;text-align:left;background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);transition:transform .25s cubic-bezier(.3,1.5,.5,1),background .2s}
+body.glass .am-row{background:var(--lg-fill);box-shadow:var(--lg-rim)}
+.am-row:active{transform:scale(.97)}
+.am-row .art{width:54px}
+.am-text{flex:1;min-width:0;display:flex;flex-direction:column}
+.am-text b{font-size:16px;font-weight:700}
+.am-text small{color:var(--muted);font-size:12.5px}
+.am-row>svg{color:var(--faint);width:20px;height:20px}
+.btn.danger{background:rgba(255,90,90,.18);color:#ff9d9a}
+.manage-btn{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;width:100%;height:auto;min-height:60px;margin-top:14px;padding:12px 18px;border-radius:20px;text-align:left}
+.manage-btn svg{position:absolute;right:16px;top:50%;margin-top:-10px}
+.manage-btn .mb-sub{font-size:12px;font-weight:500;color:var(--muted)}
+
+/* v11 polish */
+.pick-bar{position:static;margin:4px 0 8px;padding:6px 0;background:none;backdrop-filter:none}
+.pv .art>svg{display:none}
+.am-row .art.round,.am-hero .art.round{border-radius:50%}
+.am-row .art.round img,.am-hero .art.round img{border-radius:50%}
+
 </style>
 </head>
 <body>
@@ -1106,6 +1186,10 @@ html{scroll-behavior:auto}
     <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></symbol>
     <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
     <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.7" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.7" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.7" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.7" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-chev-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-merge" viewBox="0 0 24 24"><path d="M6 3v4a5 5 0 0 0 5 5h2a5 5 0 0 1 5 5v4M18 3v4a5 5 0 0 1-5 5"/></symbol>
     <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3.5 8h3.2L8.4 5.5h7.2L17.3 8h3.2a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1h-17a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.2" r="3.6"/></symbol>
     <symbol id="i-logo" viewBox="0 0 40 40"><defs><linearGradient id="lgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5df08c"/><stop offset="1" stop-color="#12b8a0"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lgrad)"/><path d="M11 22v-4M17 28V12M23 25v-9M29 22v-4" stroke="#06121a" stroke-width="3.4" stroke-linecap="round" fill="none"/></symbol>
     <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 15V9M9 19V5M14 17V7M19 15v-4"/></symbol>
@@ -1266,16 +1350,20 @@ html{scroll-behavior:auto}
 
 <dialog id="pickDlg" class="wide">
   <div class="dlg pick">
+    <span class="sheet-grip" aria-hidden="true"></span>
     <div class="pick-head"><div style="min-width:0"><h3 id="pickTitle">Add songs</h3><p id="pickSub"></p></div><button class="icon-btn" id="pickClose" type="button" aria-label="Close"><svg class="i"><use href="#i-close"/></svg></button></div>
-    <label class="searchbar"><svg class="i"><use href="#i-search"/></svg><input id="pickSearch" type="search" placeholder="Search your songs" aria-label="Search your songs" autocomplete="off"></label>
-    <div class="pick-filters">
-      <p class="fl-label">Length</p><div class="chips" id="pickLen"></div>
-      <p class="fl-label">Artist</p><div class="chips" id="pickArtists"></div>
+    <label class="searchbar pk-search"><svg class="i"><use href="#i-search"/></svg><input id="pickSearch" type="search" placeholder="Search songs or artists" aria-label="Search your songs" autocomplete="off"></label>
+    <div class="pick-scroll" id="pickScroll">
+      <div class="pick-filters"><div class="chips" id="pickLen"></div><div class="chips" id="pickArtists"></div></div>
+      <div class="pick-bar"><span id="pickCount"></span><button class="btn primary small" id="pickAll" type="button"></button></div>
+      <div class="pick-list" id="pickList"></div>
     </div>
-    <div class="pick-bar"><span id="pickCount"></span><button class="btn primary" id="pickAll" type="button"></button></div>
-    <div class="pick-list" id="pickList"></div>
-    <div class="dlg-actions"><button class="btn" id="pickImport" type="button"><svg class="i"><use href="#i-upload"/></svg>Add from device</button><button class="btn primary" id="pickDone" type="button">Done</button></div>
+    <div class="pick-foot"><button class="btn" id="pickImport" type="button"><svg class="i"><use href="#i-upload"/></svg>Add from device</button><button class="btn primary" id="pickDone" type="button">Done</button></div>
   </div>
+</dialog>
+
+<dialog id="artistsDlg" class="wide">
+  <div class="dlg am" id="amRoot"></div>
 </dialog>
 
 <div class="scrim" id="scrim" hidden></div>
@@ -1285,6 +1373,7 @@ html{scroll-behavior:auto}
 <input type="file" id="coverInput" accept="image/*" hidden>
 <input type="file" id="filePicker" accept="audio/*,.mp3,.m4a,.aac,.ogg,.oga,.opus,.wav,.flac,.weba" multiple hidden>
 <audio id="audio" preload="metadata"></audio>
+<audio id="preview" preload="auto"></audio>
 
 <script>
 (() => {
@@ -1753,6 +1842,12 @@ function sameArtist(a, b) {
   }
   return d === 2 && mn >= 14;
 }
+/* artists you edited by hand (kept even after the library is scanned again) */
+const AM_KEY = 'wave.artists';
+let AM = { songs: {} };
+(function () { try { const o = JSON.parse(localStorage.getItem(AM_KEY) || '{}'); if (o && o.songs) AM.songs = o.songs; } catch (e) {} })();
+const saveAM = () => { try { localStorage.setItem(AM_KEY, JSON.stringify(AM)); } catch (e) {} };
+const pvState = { id: null, url: null, start: 0, end: 0, resume: false, token: 0 };   // 30-second previews
 const STRONG_SEP = /\s*(?:,|;|\/|\s+feat\.?\s+|\s+ft\.?\s+|\s+featuring\s+|\s+w\/\s+)\s*/i;
 const WEAK_SEP = /\s+(?:&|x|×)\s+/i;
 function splitArtists(raw, solo) {
@@ -1808,7 +1903,10 @@ function fixLibrary(list) {
   pre.forEach(p => {
     let keep = p.names;
     if (smart && keep.length > 1) { const solid = keep.filter(n => cnt.get(n) >= 2); keep = solid.length ? solid : [keep[0]]; }
-    p.t.name = p.nm || p.t.name0; p.t.artists = keep; p.t.artist = p.names.join(', ');
+    let shown = p.names;
+    const ov = AM.songs[p.t.id];
+    if (ov && ov.length) { keep = ov; shown = ov; }
+    p.t.name = p.nm || p.t.name0; p.t.artists = keep; p.t.artist = shown.join(', ');
   });
 }
 /* the same artist's other songs lend their cover to songs that have none */
@@ -1918,6 +2016,7 @@ async function load(id, { play = true, at = 0, recover = false } = {}) {
   const token = ++loadToken;
   curId = id;
   wantPlay = !!play; playStartAt = Date.now(); resumeTries = 0;
+  if (pvState.id) previewStop(true);
   if (queue[qi] !== id) { qi = queue.indexOf(id); if (qi < 0) { queue = [id]; base = [id]; qi = 0; } }
   if (play && !recover) { recent = [id, ...recent.filter(x => x !== id)].slice(0, 40); plays[id] = (plays[id] || 0) + 1; }
   updateMeta();
@@ -1964,6 +2063,7 @@ function playList(key, doShuffle) {
   setQueue(ids, start); load(start); renderQueue();
 }
 function togglePlay() {
+  if (pvState.id) previewStop(true);
   if (!curId) { const ids = listIds('all'); if (!ids.length) { toast('Add some music first.'); return; } setQueue(ids, ids[0]); load(ids[0]); renderQueue(); return; }
   if (loadedId !== curId) {
     if (!queue.length) setQueue(listIds('all'), curId);
@@ -2458,7 +2558,7 @@ function collectionView(kind, id) {
   let h = `<header class="col-hero" style="--hero:${hero}">`;
   h += `<div class="col-cover${round ? ' round' : ''}">${artHtml}</div>`;
   const icons = (canEdit ? `<button class="btn small edit-btn${plEdit ? ' on' : ''}" data-act="edit-order" aria-pressed="${plEdit}">${ico(plEdit ? 'check' : 'edit')}${plEdit ? 'Done' : 'Edit'}</button><button class="round-btn sm" data-act="add-songs" data-id="${p.id}" aria-label="Add songs">${ico('playlist-add')}</button><button class="round-btn sm" data-act="pl-menu" data-id="${p.id}" aria-haspopup="menu" aria-label="Playlist options">${ico('more')}</button>`
-    : kind === 'artist' ? `<button class="round-btn sm" data-act="save-list" data-list="${esc(key)}" data-name="${esc(name)}" aria-label="Save as playlist" title="Save as playlist">${ico('playlist-add')}</button><button class="btn small" data-act="rename-artist" data-name="${esc(name)}">${ico('edit')}Rename</button>`
+    : kind === 'artist' ? `<button class="round-btn sm" data-act="save-list" data-list="${esc(key)}" data-name="${esc(name)}" aria-label="Save as playlist" title="Save as playlist">${ico('playlist-add')}</button><button class="btn small" data-act="manage-artists" data-name="${esc(name)}">${ico('edit')}Manage</button>`
     : (kind === 'mix' || kind === 'liked') && ids.length ? `<button class="round-btn sm" data-act="save-list" data-list="${esc(key)}" data-name="${esc(name)}" aria-label="Save as playlist" title="Save as playlist">${ico('playlist-add')}</button>` : '');
   h += `<div class="col-meta"><p class="kind">${label}</p><h1 dir="auto">${esc(name)}</h1><div class="pills"><span>${plural(ids.length, 'song')}</span>${total ? `<span>${longTime(total)}</span>` : ''}</div>${icons ? `<div class="col-icons">${icons}</div>` : ''}</div></header>`;
   h += `<div class="col-bar"><button class="btn-wide play" data-act="play-list" data-list="${esc(key)}">${ico('play', 'fillicon')}Play</button><button class="btn-wide ghost" data-act="shuffle-list" data-list="${esc(key)}">${ico('shuffle')}Shuffle</button></div>`;
@@ -2707,58 +2807,64 @@ async function createPlaylist(addId) {
   go('playlist', p.id);
   if (tracks.length && r.start !== 'empty') setTimeout(() => openPick(p.id), 250);
 }
-let pickPl = null;
-const pickState = { len: 'any', artist: null };
+let pickPl = null, pickAdded = 0;
+const pickState = { len: 'any', artist: null, fresh: false };
 const LENS = [['any', 'Any length'], ['lt2', 'Under 2 min'], ['2to4', '2 – 4 min'], ['gt4', 'Over 4 min']];
 const lenOk = (t, k) => k === 'any' || (t.duration > 0 && (k === 'lt2' ? t.duration < 120 : k === '2to4' ? t.duration >= 120 && t.duration <= 240 : t.duration > 240));
+const artistsOf = t => (t.artists && t.artists.length ? t.artists : [t.artist]);
 function pickBase() {
+  const p = playlists.find(x => x.id === pickPl);
   const terms = norm($('#pickSearch').value).split(/\s+/).filter(Boolean);
-  return tracks.filter(t => lenOk(t, pickState.len) && terms.every(w => norm(`${t.name} ${t.artist}`).includes(w)));
+  return tracks.filter(t => lenOk(t, pickState.len) && (!pickState.fresh || !p || !p.ids.includes(t.id)) && terms.every(w => norm(`${t.name} ${t.artist}`).includes(w)));
 }
-function pickMatches() { const b = pickBase(); return pickState.artist ? b.filter(t => t.artist === pickState.artist) : b; }
+function pickMatches() { const b = pickBase(); return pickState.artist ? b.filter(t => artistsOf(t).includes(pickState.artist)) : b; }
 function updatePickBar() {
   const p = playlists.find(x => x.id === pickPl); if (!p) return;
   const m = pickMatches(), fresh = m.filter(t => !p.ids.includes(t.id));
-  $('#pickSub').textContent = `${plural(p.ids.length, 'song')} in this playlist`;
-  $('#pickCount').textContent = `${plural(m.length, 'song')} match`;
-  const btn = $('#pickAll');
-  btn.disabled = !fresh.length;
+  $('#pickSub').textContent = `${plural(p.ids.length, 'song')} in playlist · tap a cover to preview`;
+  $('#pickCount').textContent = `${plural(m.length, 'song')}${pickState.artist ? ' by ' + pickState.artist : ''}`;
+  const btn = $('#pickAll'); btn.disabled = !fresh.length;
   btn.innerHTML = fresh.length ? `${ico('plus')}Add all ${fresh.length}` : `${ico('check')}All added`;
+  $('#pickDone').textContent = pickAdded > 0 ? `Done · ${pickAdded} added` : 'Done';
+}
+function pickRow(t, inn) {
+  return `<div class="pk-row${inn ? ' is-added' : ''}" data-id="${t.id}">
+    <button class="pv" data-act="pv-toggle" data-id="${t.id}" aria-label="Hear 30 seconds from the middle of ${esc(t.name)}">${art(t)}<span class="pv-ico">${ico('play', 'fillicon i-play')}${ico('pause', 'fillicon i-pause')}</span><i class="pv-bar"></i></button>
+    <span class="pk-text"><span class="pk-title" dir="auto">${esc(t.name)}</span><span class="pk-artist" dir="auto">${esc(t.artist)}${t.duration ? ' · ' + time(t.duration) : ''}</span></span>
+    <button class="add-btn${inn ? ' on' : ''}" data-act="pick-toggle" data-id="${t.id}" aria-pressed="${inn}" aria-label="${inn ? 'Remove from playlist' : 'Add to playlist'}">${ico(inn ? 'check' : 'plus')}</button>
+  </div>`;
 }
 function renderPick() {
   const p = playlists.find(x => x.id === pickPl); if (!p) return;
   const base = pickBase();
-  const counts = new Map(); base.forEach(t => counts.set(t.artist, (counts.get(t.artist) || 0) + 1));
-  if (pickState.artist && !counts.has(pickState.artist)) pickState.artist = null;
-  const arts = Array.from(counts, ([name, n]) => ({ name, n })).sort((x, y) => y.n - x.n || x.name.localeCompare(y.name)).slice(0, 40);
-  $('#pickLen').innerHTML = LENS.map(([k, l]) => `<button class="chip${pickState.len === k ? ' on' : ''}" data-act="pick-len" data-v="${k}" role="radio" aria-checked="${pickState.len === k}">${l}</button>`).join('');
-  $('#pickArtists').innerHTML = `<button class="chip${!pickState.artist ? ' on' : ''}" data-act="pick-artist" data-v="">All artists</button>` + arts.map(a => `<button class="chip${pickState.artist === a.name ? ' on' : ''}" data-act="pick-artist" data-v="${esc(a.name)}" dir="auto">${esc(a.name)}<b>${a.n}</b></button>`).join('');
+  const byArtist = new Map();
+  base.forEach(t => artistsOf(t).forEach(n => { if (!byArtist.has(n)) byArtist.set(n, []); byArtist.get(n).push(t.id); }));
+  if (pickState.artist && !byArtist.has(pickState.artist)) pickState.artist = null;
+  const arts = Array.from(byArtist, ([name, ids]) => ({ name, ids })).sort((x, y) => y.ids.length - x.ids.length || x.name.localeCompare(y.name)).slice(0, 40);
+  $('#pickLen').innerHTML = `<button class="chip toggle${pickState.fresh ? ' on' : ''}" data-act="pick-fresh" aria-pressed="${pickState.fresh}">${ico('check')}Not added yet</button>` + LENS.map(([k, l]) => `<button class="chip${pickState.len === k ? ' on' : ''}" data-act="pick-len" data-v="${k}" role="radio" aria-checked="${pickState.len === k}">${l}</button>`).join('');
+  $('#pickArtists').innerHTML = `<button class="chip${!pickState.artist ? ' on' : ''}" data-act="pick-artist" data-v="">All artists</button>` + arts.map(a => `<button class="chip artist${pickState.artist === a.name ? ' on' : ''}" data-act="pick-artist" data-v="${esc(a.name)}" dir="auto">${art(bestArtTrack(a.ids), 'mini')}<span>${esc(a.name)}</span><b>${a.ids.length}</b></button>`).join('');
   const list = pickMatches();
-  $('#pickList').innerHTML = list.length ? list.map(t => {
-    const inn = p.ids.includes(t.id);
-    return `<div class="pick-row">${art(t)}<span class="t-text" style="min-width:0;flex:1"><span class="t-title" style="display:block" dir="auto">${esc(t.name)}</span><span class="t-artist" style="display:block;color:var(--muted)" dir="auto">${esc(t.artist)}${t.duration ? ' · ' + time(t.duration) : ''}</span></span><button class="btn small${inn ? '' : ' primary'}" data-act="pick-toggle" data-id="${t.id}" aria-pressed="${inn}">${inn ? ico('check') + 'Added' : ico('plus') + 'Add'}</button></div>`;
-  }).join('') : `<div class="empty" style="margin:8px 0"><h3>${tracks.length ? 'No songs match' : 'Your library is empty'}</h3><p>${tracks.length ? 'Try another filter or search.' : 'Add songs to your phone first.'}</p></div>`;
-  updatePickBar();
+  $('#pickList').innerHTML = list.length ? list.map(t => pickRow(t, p.ids.includes(t.id))).join('') : `<div class="empty" style="margin:8px 0"><h3>${tracks.length ? 'No songs match' : 'Your library is empty'}</h3><p>${tracks.length ? 'Try another filter or search.' : 'Add songs to your phone first.'}</p></div>`;
+  markPreview(); updatePickBar();
 }
 const renderPickIfOpen = () => { if ($('#pickDlg').open) renderPick(); };
 function openPick(plId) {
   const p = playlists.find(x => x.id === plId); if (!p) return;
-  pickPl = plId; pickState.len = 'any'; pickState.artist = null;
+  pickPl = plId; pickAdded = 0; pickState.len = 'any'; pickState.artist = null; pickState.fresh = false;
   $('#pickTitle').textContent = `Add songs to ${p.name}`; $('#pickSearch').value = '';
-  renderPick(); $('#pickDlg').showModal();
+  renderPick(); $('#pickScroll').scrollTop = 0; $('#pickDlg').showModal();
 }
 $('#pickAll').onclick = () => {
   const p = playlists.find(x => x.id === pickPl); if (!p) return;
   const fresh = pickMatches().filter(t => !p.ids.includes(t.id)); if (!fresh.length) return;
-  fresh.forEach(t => p.ids.push(t.id)); save(true);
+  fresh.forEach(t => p.ids.push(t.id)); pickAdded += fresh.length; save(true);
   toast(`Added ${plural(fresh.length, 'song')}`);
-  $$('#pickList [data-act=pick-toggle]').forEach(el => { el.className = 'btn small'; el.setAttribute('aria-pressed', 'true'); el.innerHTML = ico('check') + 'Added'; el.classList.add('pop'); });
-  updatePickBar();
+  renderPick();
 };
 $('#pickClose').onclick = () => $('#pickDlg').close();
 $('#pickSearch').addEventListener('input', renderPick);
 $('#pickDone').onclick = () => $('#pickDlg').close();
-$('#pickDlg').addEventListener('close', () => { pickPl = null; render(); });
+$('#pickDlg').addEventListener('close', () => { previewStop(true); pickPl = null; render(); });
 $('#pickImport').onclick = () => { importTarget = pickPl; $('#filePicker').click(); };
 
 /* ---------- events ---------- */
@@ -2814,10 +2920,60 @@ function act(a, el) {
       const cur = el.dataset.name;
       askPlaylist({ title: 'Rename artist', ok: 'Save', name: cur, noCover: true }).then(r => {
         if (!r || r.name === cur) return;
-        theme.names[nameKey(cur)] = r.name; theme.names[nameKey(r.name)] = r.name;
-        saveTheme(); fixLibrary(tracks); reindex(); save(true); go('artist', r.name); toast('Artist renamed');
+        renameArtist(cur, r.name); go('artist', r.name); toast('Artist renamed');
       }); break;
     }
+    case 'manage-artists': {
+      const sd = $('#settingsDlg'); if (sd.open) sd.close();
+      openManager(el.dataset.name || null); break;
+    }
+    case 'am-close': $('#artistsDlg').close(); break;
+    case 'am-open': am.view = 'detail'; am.name = el.dataset.name; am.isNew = false; renderAM(); break;
+    case 'am-back':
+      if (am.view === 'detail') { am.view = 'list'; am.name = null; }
+      else if (am.view === 'add' && am.isNew && !listIds('artist:' + am.name).length) { am.view = 'list'; am.name = null; }
+      else am.view = 'detail';
+      renderAM(); break;
+    case 'am-new':
+      askPlaylist({ title: 'New artist', ok: 'Next', name: '', noCover: true }).then(r => {
+        if (!r) return;
+        am.name = r.name; am.isNew = true; am.aq = ''; am.view = 'add'; renderAM();
+      }); break;
+    case 'am-add': am.view = 'add'; am.aq = ''; renderAM(); break;
+    case 'am-addsong': {
+      amAddSong(am.name, el.dataset.id); saveAM();
+      const rowEl = el.closest('.pk-row'); if (rowEl) rowEl.classList.add('is-added');
+      el.className = 'add-btn on pop'; el.innerHTML = ico('check'); el.setAttribute('aria-label', 'Added'); el.removeAttribute('data-act');
+      toast(`Added to ${am.name}`, 1400); break;
+    }
+    case 'am-addall': {
+      const m = amAddMatches(); if (!m.length || m.length > 300) break;
+      m.forEach(t => amAddSong(am.name, t.id)); saveAM();
+      toast(`Added ${plural(m.length, 'song')} to ${am.name}`); am.view = 'detail'; am.isNew = false; renderAM(); break;
+    }
+    case 'am-rem': {
+      amRemoveSong(am.name, el.dataset.id); saveAM();
+      if (!listIds('artist:' + am.name).length) { toast(`${am.name} has no songs left`); am.view = 'list'; am.name = null; }
+      renderAM(); break;
+    }
+    case 'am-rename':
+      askPlaylist({ title: 'Rename artist', ok: 'Save', name: am.name, noCover: true }).then(r => {
+        if (!r || r.name === am.name) return;
+        renameArtist(am.name, r.name); am.name = r.name; renderAM(); toast('Artist renamed');
+      }); break;
+    case 'am-merge': am.view = 'merge'; renderAM(); break;
+    case 'am-merge-to': {
+      const from = am.name, to = el.dataset.name;
+      confirmDialog({ title: `Merge into ${to}?`, text: `All ${plural(listIds('artist:' + from).length, 'song')} by “${from}” will move to “${to}”, and “${from}” will disappear.`, ok: 'Merge' }).then(ok => {
+        if (!ok) return;
+        amMerge(from, to); saveAM(); am.name = to; am.view = 'detail'; renderAM(); toast('Artists merged');
+      }); break;
+    }
+    case 'am-delete':
+      confirmDialog({ title: `Delete ${am.name}?`, text: 'The artist is removed from all their songs. The songs stay in your library as “Unknown artist” unless another artist is credited.', ok: 'Delete' }).then(ok => {
+        if (!ok) return;
+        amDelete(am.name); saveAM(); am.view = 'list'; am.name = null; renderAM(); toast('Artist deleted');
+      }); break;
     case 'set-smart': theme.smart = el.dataset.v === '1'; saveTheme(); fixLibrary(tracks); reindex(); renderSettings(); render(); toast(theme.smart ? 'Smart artists is on' : 'Smart artists is off'); break;
     case 'sort': sortMode = el.dataset.v; save(); renderView(); break;
     case 'tab': libTab = el.dataset.v; if (el.dataset.go) go(el.dataset.go); else renderView(true); break;
@@ -2841,11 +2997,15 @@ function act(a, el) {
     case 'jump': { const i = +el.dataset.i; if (queue[i]) { qi = i; load(queue[i]); renderQueue(); } break; }
     case 'pick-toggle': {
       const p = playlists.find(x => x.id === pickPl), id = el.dataset.id; if (!p) break;
-      if (p.ids.includes(id)) p.ids = p.ids.filter(x => x !== id); else p.ids.push(id);
+      if (p.ids.includes(id)) { p.ids = p.ids.filter(x => x !== id); pickAdded = Math.max(0, pickAdded - 1); } else { p.ids.push(id); pickAdded++; }
       const inn = p.ids.includes(id);
-      el.className = 'btn small' + (inn ? ' pop' : ' primary'); el.setAttribute('aria-pressed', inn); el.innerHTML = inn ? ico('check') + 'Added' : ico('plus') + 'Add';
+      el.classList.toggle('on', inn); el.setAttribute('aria-pressed', inn); el.innerHTML = ico(inn ? 'check' : 'plus');
+      el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+      const rowEl = el.closest('.pk-row'); if (rowEl) rowEl.classList.toggle('is-added', inn);
       updatePickBar(); save(); break;
     }
+    case 'pick-fresh': pickState.fresh = !pickState.fresh; renderPick(); break;
+    case 'pv-toggle': previewToggle(el.dataset.id); break;
   }
 }
 document.addEventListener('click', e => {
@@ -3097,6 +3257,54 @@ function askMove({ name, pos, max }) {
   });
 }
 
+/* ---------- 30-second preview from the middle of a song ---------- */
+const pv = $('#preview');
+let pvRaf = 0;
+function markPreview() {
+  $$('.pv').forEach(btn => { const on = btn.dataset.id === pvState.id; btn.classList.toggle('on', on); if (!on) btn.style.removeProperty('--pv'); });
+}
+async function previewToggle(id) {
+  if (pvState.id === id) { previewStop(); return; }
+  previewStop();
+  const t = T(id); if (!t || t.remote) return;
+  const token = ++pvState.token;
+  pvState.id = id; markPreview();
+  let src = '';
+  try {
+    if (NATIVE) src = await blobOrUrl('/media/' + t.mid, 70e6);
+    else { const bl = await getBlob(id); if (!bl) throw new Error('no file'); src = URL.createObjectURL(bl); }
+  } catch (e) { if (token === pvState.token) { toast('Couldn’t play a preview of this song.'); previewStop(); } return; }
+  if (token !== pvState.token) { if (src.startsWith('blob:')) URL.revokeObjectURL(src); return; }
+  pvState.url = src;
+  if (playing) { pvState.resume = true; wantPlay = false; audio.pause(); }
+  pv.src = src;
+  await new Promise(res => { if (pv.readyState >= 1) res(); else { pv.addEventListener('loadedmetadata', res, { once: true }); pv.addEventListener('error', res, { once: true }); } });
+  if (token !== pvState.token) return;
+  const d = pv.duration || t.duration || 0;
+  pvState.start = d > 32 ? Math.max(0, Math.min(d / 2, d - 30)) : 0;       // starts in the middle of the song
+  pvState.end = d ? Math.min(d, pvState.start + 30) : pvState.start + 30;
+  try { pv.currentTime = pvState.start; await pv.play(); }
+  catch (e) { if (token === pvState.token) { toast('Couldn’t play a preview of this song.'); previewStop(); } return; }
+  pvTick();
+}
+function pvTick() {
+  if (!pvState.id) return;
+  const span = Math.max(1, pvState.end - pvState.start), pct = clamp((pv.currentTime - pvState.start) / span, 0, 1);
+  $$('.pv.on').forEach(btn => btn.style.setProperty('--pv', pct.toFixed(3)));
+  if (pv.ended || pv.currentTime >= pvState.end - 0.05) { previewStop(); return; }
+  pvRaf = requestAnimationFrame(pvTick);
+}
+function previewStop(noResume) {
+  cancelAnimationFrame(pvRaf); pvState.token++;
+  const had = pvState.id;
+  try { pv.pause(); } catch (e) {}
+  if (pvState.url && pvState.url.startsWith('blob:')) URL.revokeObjectURL(pvState.url);
+  pvState.url = null; pvState.id = null;
+  try { pv.removeAttribute('src'); pv.load(); } catch (e) {}
+  markPreview();
+  if (pvState.resume) { pvState.resume = false; if (!noResume && had && curId) { wantPlay = true; playStartAt = Date.now(); audio.play().catch(() => {}); } }
+}
+
 /* soft ripple when you press a button */
 document.addEventListener('pointerdown', e => {
   const b = e.target.closest('.btn,.btn-wide,.play-btn,.fab,.ctl-btn,.round-btn,.round-play,.f-play,.f-ico,.chip,.tab');
@@ -3107,13 +3315,91 @@ document.addEventListener('pointerdown', e => {
   b.appendChild(s); setTimeout(() => s.remove(), 700);
 });
 
+/* ---------- manage artists (settings) ---------- */
+const am = { view: 'list', name: null, q: '', aq: '', isNew: false };
+function setSongArtists(id, names) {
+  const t = T(id); if (!t) return;
+  let list = names.filter((n, i) => n && names.indexOf(n) === i);
+  if (list.length > 1) list = list.filter(n => n !== 'Unknown artist');
+  if (!list.length) list = ['Unknown artist'];
+  AM.songs[id] = list; t.artists = list; t.artist = list.join(', ');
+}
+const amRemoveSong = (artist, id) => { const t = T(id); if (t) setSongArtists(id, artistsOf(t).filter(a => a !== artist)); };
+const amAddSong = (artist, id) => { const t = T(id); if (t) setSongArtists(id, artistsOf(t).concat(artist)); };
+function amDelete(artist) { listIds('artist:' + artist).forEach(id => amRemoveSong(artist, id)); }
+function amMerge(from, to) { listIds('artist:' + from).forEach(id => setSongArtists(id, artistsOf(T(id)).map(a => a === from ? to : a))); }
+function renameArtist(cur, next) {
+  theme.names[nameKey(cur)] = next; theme.names[nameKey(next)] = next;
+  Object.keys(AM.songs).forEach(id => { AM.songs[id] = AM.songs[id].map(a => a === cur ? next : a); });
+  saveAM(); saveTheme(); fixLibrary(tracks); reindex(); save(true);
+}
+function openManager(name) {
+  am.view = name ? 'detail' : 'list'; am.name = name || null; am.q = ''; am.aq = ''; am.isNew = false;
+  renderAM(); $('#artistsDlg').showModal();
+}
+const amHead = (title, back) => `<span class="sheet-grip" aria-hidden="true"></span><div class="am-head">${back ? `<button class="icon-btn" data-act="am-back" aria-label="Back">${ico('chevron-left')}</button>` : ''}<h3 class="trunc" dir="auto">${esc(title)}</h3><button class="icon-btn" data-act="am-close" aria-label="Close">${ico('close')}</button></div>`;
+function amArtistRows(filter, exclude) {
+  const q = norm(filter || '');
+  return artistList().filter(a => a.name !== exclude && (!q || norm(a.name).includes(q))).map(a => `<button class="am-row" data-act="${exclude ? 'am-merge-to' : 'am-open'}" data-name="${esc(a.name)}">${art(bestArtTrack(a.ids), 'round')}<span class="am-text"><b class="trunc" dir="auto">${esc(a.name)}</b><small>${plural(a.ids.length, 'song')}</small></span>${ico('chev-right')}</button>`).join('') || `<div class="empty"><h3>No artists found</h3></div>`;
+}
+function amSongRow(t, mode) {
+  const credits = artistsOf(t);
+  return `<div class="pk-row" data-id="${t.id}"><button class="pv" data-act="pv-toggle" data-id="${t.id}" aria-label="Hear 30 seconds from the middle of ${esc(t.name)}">${art(t)}<span class="pv-ico">${ico('play', 'fillicon i-play')}${ico('pause', 'fillicon i-pause')}</span><i class="pv-bar"></i></button>
+    <span class="pk-text"><span class="pk-title" dir="auto">${esc(t.name)}</span><span class="pk-artist" dir="auto">${esc(credits.join(', '))}${t.duration ? ' · ' + time(t.duration) : ''}</span></span>
+    ${mode === 'rem' ? `<button class="add-btn rem" data-act="am-rem" data-id="${t.id}" aria-label="Remove from ${esc(am.name)}">${ico('minus')}</button>` : mode === 'add' ? `<button class="add-btn" data-act="am-addsong" data-id="${t.id}" aria-label="Add to ${esc(am.name)}">${ico('plus')}</button>` : ''}</div>`;
+}
+function amAddMatches() {
+  const q = norm(am.aq || '').split(/\s+/).filter(Boolean);
+  return tracks.filter(t => !artistsOf(t).includes(am.name) && q.every(w => norm(`${t.name} ${t.artist}`).includes(w)));
+}
+function paintAMList() { const el = $('#amList'); if (el) el.innerHTML = amArtistRows(am.q); }
+function paintAMAdd() {
+  const el = $('#amAddList'); if (!el) return;
+  const m = amAddMatches(), shown = m.slice(0, 120);
+  $('#amAddCount').textContent = `${plural(m.length, 'song')}${am.aq ? ' match' : ''}`;
+  const btn = $('#amAddAll'); btn.disabled = !m.length || m.length > 300; btn.innerHTML = `${ico('plus')}Add ${m.length > 300 ? 'a search first' : 'all ' + m.length}`;
+  el.innerHTML = shown.map(t => amSongRow(t, 'add')).join('') + (m.length > shown.length ? `<p class="note" style="text-align:center">Showing ${shown.length}. Search to narrow it down.</p>` : '') || `<div class="empty"><h3>No songs to add</h3></div>`;
+  markPreview();
+}
+function renderAM() {
+  const root = $('#amRoot'); previewStop(true);
+  if (am.view === 'list') {
+    const all = artistList();
+    root.innerHTML = `${amHead('Manage artists')}<p class="am-sub">${plural(all.length, 'artist')} · tap one to edit it</p>
+      <label class="searchbar pk-search"><svg class="i"><use href="#i-search"/></svg><input id="amSearch" type="search" placeholder="Search artists" value="${esc(am.q)}" autocomplete="off"></label>
+      <div class="am-actions"><button class="btn primary small" data-act="am-new">${ico('plus')}New artist</button></div>
+      <div class="pick-scroll" id="amList">${amArtistRows(am.q)}</div>`;
+  } else if (am.view === 'detail') {
+    const ids = listIds('artist:' + am.name), unknown = am.name === 'Unknown artist';
+    root.innerHTML = `${amHead(am.name, true)}
+      <div class="am-hero">${art(bestArtTrack(ids) || null, 'round')}<div class="am-meta"><div class="pills"><span>${plural(ids.length, 'song')}</span>${totalDur(ids) ? `<span>${longTime(totalDur(ids))}</span>` : ''}</div></div></div>
+      <div class="am-actions">${unknown ? '' : `<button class="btn small" data-act="am-rename">${ico('edit')}Rename</button><button class="btn small" data-act="am-merge">${ico('merge')}Merge</button><button class="btn small danger" data-act="am-delete">${ico('trash')}Delete</button>`}</div>
+      <button class="btn primary am-addbtn" data-act="am-add">${ico('plus')}Add songs to ${esc(am.name)}</button>
+      <div class="pick-scroll">${ids.length ? ids.map(id => amSongRow(T(id), unknown ? 'none' : 'rem')).join('') : `<div class="empty"><h3>No songs yet</h3><p>Use “Add songs” to give this artist some songs.</p></div>`}</div>`;
+  } else if (am.view === 'add') {
+    root.innerHTML = `${amHead('Add songs to ' + am.name, true)}
+      <label class="searchbar pk-search"><svg class="i"><use href="#i-search"/></svg><input id="amAddSearch" type="search" placeholder="Search songs" value="${esc(am.aq)}" autocomplete="off"></label>
+      <div class="pick-bar"><span id="amAddCount"></span><button class="btn primary small" id="amAddAll" data-act="am-addall"></button></div>
+      <div class="pick-scroll" id="amAddList"></div>`;
+    paintAMAdd();
+  } else if (am.view === 'merge') {
+    root.innerHTML = `${amHead('Merge ' + am.name + ' into…', true)}<p class="am-sub">Pick the artist that should keep all the songs.</p>
+      <div class="pick-scroll" id="amList">${amArtistRows('', am.name)}</div>`;
+  }
+}
+$('#amRoot').addEventListener('input', e => {
+  if (e.target.id === 'amSearch') { am.q = e.target.value; paintAMList(); }
+  else if (e.target.id === 'amAddSearch') { am.aq = e.target.value; paintAMAdd(); }
+});
+$('#artistsDlg').addEventListener('close', () => { previewStop(true); save(true); render(); });
+
 /* ---------- appearance settings ---------- */
 function renderSettings() {
   const sw = Object.keys(ACCENTS).map(k => {
     const f = ACCENTS[k], on = theme.accent === k;
     return `<div><button class="swatch${k === 'song' ? ' song' : ''}${on ? ' on' : ''}" data-act="set-accent" data-v="${k}" role="radio" aria-checked="${on}" aria-label="${k === 'song' ? 'Follow the song' : k}" style="${f ? `background:hsl(${f[0]} ${f[1]}% ${f[2]}%)` : ''}">${ico('check')}</button><div class="swatch-label">${k === 'song' ? 'Song' : ''}</div></div>`;
   }).join('');
-  $('#settingsBody').innerHTML = `<p class="set-label">Your name</p><input id="setName" class="text-in" type="text" maxlength="24" value="${esc(theme.name || '')}" placeholder="Shown on the home screen" autocomplete="off"><p class="set-label">Smart artists</p><div class="chips" role="radiogroup" aria-label="Smart artists"><button class="chip${theme.smart !== false ? ' on' : ''}" data-act="set-smart" data-v="1" role="radio" aria-checked="${theme.smart !== false}">On</button><button class="chip${theme.smart === false ? ' on' : ''}" data-act="set-smart" data-v="0" role="radio" aria-checked="${theme.smart === false}">Off</button></div><p class="note" style="margin:8px 0 0">Merges look-alike names, puts “A, B” and “A / B” songs under both artists, and reads “Artist - Title” from song names.</p><p class="set-label">Theme</p>
+  $('#settingsBody').innerHTML = `<p class="set-label">Your name</p><input id="setName" class="text-in" type="text" maxlength="24" value="${esc(theme.name || '')}" placeholder="Shown on the home screen" autocomplete="off"><p class="set-label">Smart artists</p><div class="chips" role="radiogroup" aria-label="Smart artists"><button class="chip${theme.smart !== false ? ' on' : ''}" data-act="set-smart" data-v="1" role="radio" aria-checked="${theme.smart !== false}">On</button><button class="chip${theme.smart === false ? ' on' : ''}" data-act="set-smart" data-v="0" role="radio" aria-checked="${theme.smart === false}">Off</button></div><p class="note" style="margin:8px 0 0">Merges look-alike names, puts “A, B” and “A / B” songs under both artists, and reads “Artist - Title” from song names.</p><button class="btn manage-btn" data-act="manage-artists">${ico('user')}Manage artists<span class="mb-sub">Rename, merge, add or remove songs</span></button><p class="set-label">Theme</p>
     <div class="theme-row" role="radiogroup" aria-label="Theme">
       <button class="theme-card glass-prev${theme.mode === 'glass' ? ' on' : ''}" data-act="set-theme" data-v="glass" role="radio" aria-checked="${theme.mode === 'glass'}"><i></i>Glass</button>
       <button class="theme-card dark-prev${theme.mode === 'dark' ? ' on' : ''}" data-act="set-theme" data-v="dark" role="radio" aria-checked="${theme.mode === 'dark'}"><i></i>Classic dark</button>

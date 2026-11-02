@@ -1,6 +1,18 @@
 WAVE for Android  -  your phone's music, found automatically  (version 2)
 ==============================================================
 
+NEW IN VERSION 11
+- Add songs sheet redesigned: normal-size search bar, filter chips (Not added yet, length) and artist chips
+  with a little cover and a song count. Artist chips are now single artists (no more "A, B" chips).
+- Hear a song before adding it: tap a cover to play 30 seconds from the middle of the song
+  (a progress line runs over the cover; tap again to stop). A playing song is paused while you listen
+  and starts again when the preview ends.
+- "Done" shows how many songs you added; "Add all" adds exactly what the filters show.
+- Settings > Manage artists: open any artist to rename it, merge it into another artist,
+  delete it, add songs to it, or remove songs from it. You can also create a new artist.
+  Your edits are remembered and are not undone when the library is scanned again.
+  (Also reachable from an artist's page with the "Manage" button.)
+
 NEW IN VERSION 10
 - Cards (Recently played, playlists, artists) can no longer grow because of a long song title:
   every card and cover is the same size.
